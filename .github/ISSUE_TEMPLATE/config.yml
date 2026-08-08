@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Team discussion
+    url: https://github.com/elisaxintongyu/closest-wins/discussions
+    about: Use discussions for open-ended questions and early ideas.
