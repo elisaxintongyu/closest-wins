@@ -1,27 +1,18 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { requireRole } from "@/lib/auth-guards";
 
 export default async function PlayerPage() {
-  const { userId } = await auth();
-
-  if (!userId) {
-    redirect("/sign-in");
-  }
-
-  const user = await currentUser();
-  const userName =
-    user?.fullName ?? user?.primaryEmailAddress?.emailAddress ?? "Player";
+  const session = await requireRole("PLAYER");
 
   return (
     <DashboardShell
       eyebrow="Player dashboard"
       title="You’re signed in and ready for gameplay."
-      description="This is the player landing page. The role model exists now, and the next branch in the stack will tighten route access based on those roles."
-      userName={userName}
+      description="This protected route is the player landing area. It confirms role-based access is working and gives the game flow a dedicated home for the next milestones."
+      userName={session.userName}
       roleLabel="Player"
       highlights={[
-        "New sign-ups default to the PLAYER role",
+        "Created through the sign-up flow or the seed script",
         "Stored in PostgreSQL via Prisma",
         "Ready for Milestones 4 and 5 player/team and gameplay flows",
       ]}
