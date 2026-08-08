@@ -11,16 +11,22 @@ export default function Home() {
               Closest Wins
             </p>
             <p className="mt-1 text-sm text-stone-700">
-              Milestone 2 has started with a typed frontend foundation and the
-              first pass of the Prisma data model.
+              The app now supports credentials authentication on top of the
+              Prisma and PostgreSQL foundation.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
-              href="https://www.prisma.io/docs/orm/prisma-schema/overview"
+              href="/sign-in"
               className="inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white/80 px-5 py-2.5 text-sm font-semibold text-stone-900 transition hover:bg-white"
             >
-              Prisma schema docs
+              Sign in
+            </Link>
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-amber-50 transition hover:bg-stone-800"
+            >
+              Create account
             </Link>
           </div>
         </header>
@@ -32,12 +38,12 @@ export default function Home() {
             </p>
             <div className="space-y-5">
               <h1 className="max-w-3xl text-5xl font-semibold tracking-[-0.045em] sm:text-6xl lg:text-7xl">
-                The first database models are now part of the app.
+                Authentication is now part of the product foundation.
               </h1>
               <p className="max-w-2xl text-lg leading-8 text-stone-700 sm:text-xl">
-                This branch introduces Prisma to the project and establishes the
-                core user, account, session, and verification token models that
-                later authentication work will build on.
+                Users can register and sign in with credentials. Passwords are
+                hashed before storage, and Auth.js now handles sessions through
+                the Prisma-backed user store.
               </p>
             </div>
 
@@ -47,17 +53,17 @@ export default function Home() {
                   Data
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  Prisma is installed and the initial schema is part of the
-                  repo.
+                  The user model now stores hashed passwords for credentials
+                  login.
                 </p>
               </div>
               <div className="rounded-[1.75rem] border border-stone-900/10 bg-white/70 p-5 shadow-[0_20px_60px_rgba(120,53,15,0.1)] backdrop-blur">
                 <p className="text-sm font-semibold tracking-[0.18em] text-stone-500 uppercase">
-                  Models
+                  Auth
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  The schema covers users plus the Auth.js adapter tables we
-                  will need later.
+                  Auth.js credentials auth is wired through dedicated sign-in
+                  and sign-up pages.
                 </p>
               </div>
               <div className="rounded-[1.75rem] border border-stone-900/10 bg-white/70 p-5 shadow-[0_20px_60px_rgba(120,53,15,0.1)] backdrop-blur">
@@ -65,8 +71,8 @@ export default function Home() {
                   Next step
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  PostgreSQL connection and local database workflow come next in
-                  the stack.
+                  Role-specific pages and access controls come next in the
+                  stack.
                 </p>
               </div>
             </div>
@@ -78,16 +84,16 @@ export default function Home() {
             </p>
             <ul className="mt-6 space-y-4">
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Project setup from Milestone 1 so the schema work has a real
-                Next.js base to land in.
+                Credentials sign-in and sign-up flows built with App Router
+                forms.
               </li>
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Prisma CLI, generated client support, and the first database
-                schema file.
+                Auth.js configuration and API routing for the credentials
+                provider.
               </li>
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                A UI note on the homepage explaining what part of the milestone
-                this branch covers.
+                Password hashing and validation rules before role-specific
+                routing exists.
               </li>
             </ul>
           </aside>

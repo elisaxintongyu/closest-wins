@@ -1,6 +1,6 @@
 # Closest Wins
 
-`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch uses Prisma with PostgreSQL and is now configured to work cleanly with a remote Neon database.
+`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch adds credentials authentication on top of the Prisma and PostgreSQL foundation from the earlier stack branches.
 
 ## Stack
 
@@ -9,6 +9,7 @@
 - TypeScript 5
 - Tailwind CSS 4
 - Prisma ORM with PostgreSQL
+- Auth.js credentials authentication
 - ESLint 9 and Prettier 3
 
 ## Local development
@@ -47,6 +48,11 @@ npm run dev
 ```
 
 The app runs at [http://localhost:3000](http://localhost:3000).
+
+## Authentication routes
+
+- `/sign-in` for existing users
+- `/sign-up` for new users
 
 ## Quality checks
 
@@ -107,9 +113,11 @@ The initial production deployment was shipped to Vercel on August 8, 2026.
 
 Before future deployments, make sure the Vercel project is linked locally and that the branch is in a reviewable state.
 
-## Environment variables
+## Deployment notes
 
-This branch expects these database variables:
+For this branch, make sure local or production environments have:
 
 - `DATABASE_URL`
 - `DIRECT_URL`
+- `AUTH_SECRET`
+- `AUTH_URL`
