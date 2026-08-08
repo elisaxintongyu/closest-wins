@@ -1,6 +1,19 @@
 import Link from "next/link";
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
+const demoAccounts = [
+  {
+    email: "admin@closestwins.local",
+    password: "Admin123!",
+    role: "Admin",
+  },
+  {
+    email: "player@closestwins.local",
+    password: "Player123!",
+    role: "Player",
+  },
+];
+
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.8),_transparent_30%),linear-gradient(135deg,_#fff7ed_0%,_#fde68a_45%,_#fca5a5_100%)] px-6 py-12 text-stone-950">
@@ -12,8 +25,8 @@ export default function Home() {
               Closest Wins
             </p>
             <p className="mt-1 text-sm text-stone-700">
-              Milestone 2 now includes protected, role-aware app routes on top
-              of Clerk, Prisma, and Neon.
+              Milestone 2 now includes seeded users, protected role-aware
+              routes, and Clerk authentication on top of Prisma and Neon.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -62,8 +75,9 @@ export default function Home() {
                 Role-based access is now part of the app&apos;s core flow.
               </h1>
               <p className="max-w-2xl text-lg leading-8 text-stone-700 sm:text-xl">
-                Prisma models, Neon-backed data, Clerk sign-in, and strict
-                admin-versus-player routing are now wired together in the app.
+                Prisma models, Neon-backed data, seeded demo users, Clerk
+                sign-in, and strict admin-versus-player routing are now wired
+                together in the app.
               </p>
             </div>
 
@@ -73,7 +87,7 @@ export default function Home() {
                   Data
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  Prisma, Neon, and the role-aware user schema now work
+                  Prisma, Neon, seeds, and the role-aware user schema now work
                   together as the application foundation.
                 </p>
               </div>
@@ -99,22 +113,28 @@ export default function Home() {
 
           <aside className="rounded-[2rem] border border-stone-900/10 bg-white/75 p-8 shadow-[0_24px_80px_rgba(120,53,15,0.18)] backdrop-blur">
             <p className="text-sm font-semibold tracking-[0.24em] text-stone-500 uppercase">
-              Included in this branch
+              Seeded demo accounts
             </p>
             <ul className="mt-6 space-y-4">
-              <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                A Next.js proxy that rejects unauthenticated access to
-                restricted app areas.
-              </li>
-              <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Route guards that redirect admins and players to the correct
-                destinations.
-              </li>
-              <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Dashboard pages that now enforce role-based access instead of
-                just displaying role-aware content.
-              </li>
+              {demoAccounts.map((account) => (
+                <li
+                  key={account.email}
+                  className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4"
+                >
+                  <p className="text-sm font-semibold text-stone-900">
+                    {account.role}
+                  </p>
+                  <p className="mt-2 text-sm text-stone-700">{account.email}</p>
+                  <p className="font-mono text-sm text-stone-500">
+                    {account.password}
+                  </p>
+                </li>
+              ))}
             </ul>
+            <p className="mt-6 text-sm leading-7 text-stone-600">
+              These accounts are created by the Prisma seed script for local
+              development and testing.
+            </p>
           </aside>
         </div>
       </section>
