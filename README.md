@@ -1,6 +1,6 @@
 # Closest Wins
 
-`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch adds credentials authentication on top of the Prisma and PostgreSQL foundation from the earlier stack branches.
+`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch connects Neon-backed Prisma data access with Clerk authentication for sign-in, sign-up, and session handling.
 
 ## Stack
 
@@ -9,7 +9,7 @@
 - TypeScript 5
 - Tailwind CSS 4
 - Prisma ORM with PostgreSQL
-- Auth.js credentials authentication
+- Clerk authentication
 - ESLint 9 and Prettier 3
 
 ## Local development
@@ -26,22 +26,18 @@ npm install
 cp .env.example .env
 ```
 
-3. Add your Neon connection strings to `.env`:
+3. Add your Neon and Clerk credentials to `.env`.
+
+Required values:
 
 ```bash
-DATABASE_URL="postgresql://USER:PASSWORD@EP-XXXX-POOLER.us-west-2.aws.neon.tech/closest_wins?sslmode=require&pgbouncer=true&connect_timeout=15&schema=public"
-DIRECT_URL="postgresql://USER:PASSWORD@EP-XXXX.us-west-2.aws.neon.tech/closest_wins?sslmode=require&connect_timeout=15&schema=public"
+DATABASE_URL="postgresql://...pooler..."
+DIRECT_URL="postgresql://...direct-host..."
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
+CLERK_SECRET_KEY="sk_test_..."
 ```
 
-Use the pooled Neon URL for `DATABASE_URL` and the non-pooled direct Neon URL for `DIRECT_URL` so Prisma Client and Prisma Migrate both work reliably.
-
-4. Create the database schema in Neon:
-
-```bash
-npm run prisma:migrate -- --name init-auth
-```
-
-5. Start the app:
+4. Start the app against Neon:
 
 ```bash
 npm run dev
@@ -49,10 +45,56 @@ npm run dev
 
 The app runs at [http://localhost:3000](http://localhost:3000).
 
+## Ways to run localhost
+
+### 1. Fastest dev path with Neon
+
+Use this when you want the app talking directly to the remote Neon database and Clerk:
+
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
+
+### 2. Local Postgres container plus Clerk
+
+Use this when you want a local Postgres instance instead of Neon for database work:
+
+```bash
+npm install
+cp .env.example .env
+npm run db:up
+npm run prisma:migrate -- --name init-auth
+npm run dev
+```
+
+In that mode, replace `DATABASE_URL` and `DIRECT_URL` in `.env` with local Postgres URLs before running the migration.
+
+### 3. Production-mode localhost check
+
+Use this to verify the built app locally before deployment:
+
+```bash
+npm install
+npm run build
+npm run start
+```
+
+This also serves the app at [http://localhost:3000](http://localhost:3000).
+
 ## Authentication routes
 
 - `/sign-in` for existing users
 - `/sign-up` for new users
+
+## Deployed site
+
+The latest production deployment I found on Sunday, August 9, 2026 is:
+
+- [https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app](https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app)
+
+This is the current production deployment URL, not a custom domain.
 
 ## Quality checks
 
@@ -119,5 +161,9 @@ For this branch, make sure local or production environments have:
 
 - `DATABASE_URL`
 - `DIRECT_URL`
-- `AUTH_SECRET`
-- `AUTH_URL`
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
+- `NEXT_PUBLIC_CLERK_SIGN_IN_URL`
+- `NEXT_PUBLIC_CLERK_SIGN_UP_URL`
+- `CLERK_SIGN_IN_FALLBACK_REDIRECT_URL`
+- `CLERK_SIGN_UP_FALLBACK_REDIRECT_URL`

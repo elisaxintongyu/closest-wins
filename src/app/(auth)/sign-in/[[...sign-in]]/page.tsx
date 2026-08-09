@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SignInForm } from "@/components/auth/sign-in-form";
+import { SignIn } from "@clerk/nextjs";
 
 export default function SignInPage() {
   return (
@@ -13,18 +13,17 @@ export default function SignInPage() {
             Sign in to your Closest Wins workspace.
           </h1>
           <p className="max-w-xl text-base leading-7 text-stone-700">
-            Admins land in the question-management workspace. Players land in
-            the gameplay workspace. The redirect happens automatically based on
-            your role.
+            Use Clerk to authenticate with the app. This branch keeps the same
+            `/sign-in` route while delegating the auth flow to Clerk.
           </p>
         </div>
         <div className="rounded-[1.5rem] border border-stone-900/10 bg-stone-50 p-5">
           <p className="text-sm font-semibold text-stone-900">
-            Need a player account?
+            Need an account?
           </p>
           <p className="mt-2 text-sm leading-7 text-stone-600">
-            New accounts created from this flow are assigned the player role.
-            Admin access is reserved for seeded or manually promoted users.
+            Create one through Clerk on the sign-up route, then return here any
+            time to sign back in.
           </p>
           <Link
             href="/sign-up"
@@ -34,7 +33,14 @@ export default function SignInPage() {
           </Link>
         </div>
       </div>
-      <SignInForm />
+      <div className="rounded-[1.75rem] border border-stone-900/10 bg-stone-50/80 p-6">
+        <SignIn
+          path="/sign-in"
+          routing="path"
+          signUpUrl="/sign-up"
+          fallbackRedirectUrl="/"
+        />
+      </div>
     </section>
   );
 }

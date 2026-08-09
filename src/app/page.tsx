@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   return (
@@ -11,23 +11,37 @@ export default function Home() {
               Closest Wins
             </p>
             <p className="mt-1 text-sm text-stone-700">
-              The app now supports credentials authentication on top of the
-              Prisma and PostgreSQL foundation.
+              The app now uses Clerk authentication on top of the Prisma and
+              PostgreSQL foundation.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/sign-in"
-              className="inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white/80 px-5 py-2.5 text-sm font-semibold text-stone-900 transition hover:bg-white"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-amber-50 transition hover:bg-stone-800"
-            >
-              Create account
-            </Link>
+            <Show when="signed-out">
+              <SignInButton mode="redirect">
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white/80 px-5 py-2.5 text-sm font-semibold text-stone-900 transition hover:bg-white"
+                >
+                  Sign in
+                </button>
+              </SignInButton>
+              <SignUpButton mode="redirect">
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-amber-50 transition hover:bg-stone-800"
+                >
+                  Create account
+                </button>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <div className="flex items-center gap-3 rounded-full border border-stone-900/10 bg-white/80 px-3 py-2">
+                <span className="text-sm font-medium text-stone-700">
+                  Signed in
+                </span>
+                <UserButton />
+              </div>
+            </Show>
           </div>
         </header>
 
@@ -41,9 +55,10 @@ export default function Home() {
                 Authentication is now part of the product foundation.
               </h1>
               <p className="max-w-2xl text-lg leading-8 text-stone-700 sm:text-xl">
-                Users can register and sign in with credentials. Passwords are
-                hashed before storage, and Auth.js now handles sessions through
-                the Prisma-backed user store.
+                Users can register and sign in with Clerk. Authentication UI,
+                sessions, and account management now come from Clerk while
+                Prisma remains connected to the Neon-backed application data
+                layer.
               </p>
             </div>
 
@@ -53,8 +68,8 @@ export default function Home() {
                   Data
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  The user model now stores hashed passwords for credentials
-                  login.
+                  Prisma stays connected to PostgreSQL for application data and
+                  future game state.
                 </p>
               </div>
               <div className="rounded-[1.75rem] border border-stone-900/10 bg-white/70 p-5 shadow-[0_20px_60px_rgba(120,53,15,0.1)] backdrop-blur">
@@ -62,8 +77,8 @@ export default function Home() {
                   Auth
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  Auth.js credentials auth is wired through dedicated sign-in
-                  and sign-up pages.
+                  Clerk now powers sign-in, sign-up, session management, and
+                  account UI in this branch.
                 </p>
               </div>
               <div className="rounded-[1.75rem] border border-stone-900/10 bg-white/70 p-5 shadow-[0_20px_60px_rgba(120,53,15,0.1)] backdrop-blur">
@@ -84,16 +99,16 @@ export default function Home() {
             </p>
             <ul className="mt-6 space-y-4">
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Credentials sign-in and sign-up flows built with App Router
-                forms.
+                Clerk-hosted sign-in and sign-up flows mounted on the existing
+                App Router routes.
               </li>
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Auth.js configuration and API routing for the credentials
-                provider.
+                Clerk provider, user session UI, and route protection via
+                `proxy.ts`.
               </li>
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Password hashing and validation rules before role-specific
-                routing exists.
+                Neon-backed Prisma configuration preserved for the rest of the
+                product stack.
               </li>
             </ul>
           </aside>

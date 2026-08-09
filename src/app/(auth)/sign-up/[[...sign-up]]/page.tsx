@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SignUpForm } from "@/components/auth/sign-up-form";
+import { SignUp } from "@clerk/nextjs";
 
 export default function SignUpPage() {
   return (
@@ -13,8 +13,8 @@ export default function SignUpPage() {
             Register a player account in a few seconds.
           </h1>
           <p className="max-w-xl text-base leading-7 text-stone-700">
-            Sign-up creates a player profile, stores it in PostgreSQL through
-            Prisma, and signs the user in immediately.
+            This route now uses Clerk to handle registration, verification, and
+            session creation for the app.
           </p>
         </div>
         <div className="rounded-[1.5rem] border border-stone-900/10 bg-stone-50 p-5">
@@ -22,8 +22,8 @@ export default function SignUpPage() {
             Already have an account?
           </p>
           <p className="mt-2 text-sm leading-7 text-stone-600">
-            Use the seeded demo credentials from the homepage or sign in with
-            any previously created account.
+            Return to sign in with the same Clerk account on any device or
+            browser.
           </p>
           <Link
             href="/sign-in"
@@ -33,7 +33,14 @@ export default function SignUpPage() {
           </Link>
         </div>
       </div>
-      <SignUpForm />
+      <div className="rounded-[1.75rem] border border-stone-900/10 bg-stone-50/80 p-6">
+        <SignUp
+          path="/sign-up"
+          routing="path"
+          signInUrl="/sign-in"
+          fallbackRedirectUrl="/"
+        />
+      </div>
     </section>
   );
 }
