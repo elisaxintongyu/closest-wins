@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a defect or regression.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is happening, and what did you expect instead?
+      placeholder: A clear description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Share the smallest set of steps someone else can follow.
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. Notice ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, device, branch, and any relevant context.
+      placeholder: Chrome 139 on macOS, branch feature/homepage, local dev
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: Screenshots, logs, or related links.
