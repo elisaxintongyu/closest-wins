@@ -67,3 +67,12 @@ Accepted branch patterns:
 - `develop`
 
 Use lowercase words with hyphens when possible, for example `feature/landing-page` or `fix/signup-validation`.
+
+## Deployment
+
+The initial production deployment was shipped to Vercel on August 8, 2026.
+
+- Production URL: [closest-wins-ashen.vercel.app](https://closest-wins-ashen.vercel.app)
+- Deploy command: `vercel --prod`
+
+Before future deployments, make sure the Vercel project is linked locally and that the branch is in a reviewable state.
