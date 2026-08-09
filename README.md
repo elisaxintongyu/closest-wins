@@ -1,6 +1,6 @@
 # Closest Wins
 
-`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch adds the local PostgreSQL workflow and Prisma database connection needed for the rest of Milestone 2.
+`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch uses Prisma with PostgreSQL and is now configured to work cleanly with a remote Neon database.
 
 ## Stack
 
@@ -25,13 +25,16 @@ npm install
 cp .env.example .env
 ```
 
-3. Start PostgreSQL with Docker:
+3. Add your Neon connection strings to `.env`:
 
 ```bash
-npm run db:up
+DATABASE_URL="postgresql://USER:PASSWORD@EP-XXXX-POOLER.us-west-2.aws.neon.tech/closest_wins?sslmode=require&pgbouncer=true&connect_timeout=15&schema=public"
+DIRECT_URL="postgresql://USER:PASSWORD@EP-XXXX.us-west-2.aws.neon.tech/closest_wins?sslmode=require&connect_timeout=15&schema=public"
 ```
 
-4. Create the database schema:
+Use the pooled Neon URL for `DATABASE_URL` and the non-pooled direct Neon URL for `DIRECT_URL` so Prisma Client and Prisma Migrate both work reliably.
+
+4. Create the database schema in Neon:
 
 ```bash
 npm run prisma:migrate -- --name init-auth
@@ -63,8 +66,8 @@ npm run format
 
 - `npm run prisma:generate` regenerates the Prisma client
 - `npm run prisma:migrate` runs Prisma migrations in development
-- `npm run db:up` starts the local PostgreSQL container
-- `npm run db:down` stops the local PostgreSQL container
+- `npm run db:up` starts the optional local PostgreSQL container
+- `npm run db:down` stops the optional local PostgreSQL container
 
 ## Branch naming workflow
 
@@ -106,6 +109,7 @@ Before future deployments, make sure the Vercel project is linked locally and th
 
 ## Environment variables
 
-This branch expects one database variable:
+This branch expects these database variables:
 
 - `DATABASE_URL`
+- `DIRECT_URL`
