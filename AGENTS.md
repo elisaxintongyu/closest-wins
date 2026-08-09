@@ -10,4 +10,5 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Repository Workflow
 
-Use Graphite for branch and pull request workflow in this repository.
+Use Graphite for all GitHub interactions in this repository, including branch management, syncing, commits when appropriate to the workflow, and pull request creation or updates.
+Prefer Graphite over plain GitHub CLI flows unless a task explicitly requires raw `git` or another tool.
