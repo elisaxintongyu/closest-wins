@@ -1,6 +1,6 @@
 # Closest Wins
 
-`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch focuses on enforcing protected, role-aware routing on top of the Neon-backed Prisma and Clerk authentication foundation.
+`closest-wins` is a Next.js App Router project for the Closest Wins game. The repository now includes Milestone 1 setup work and Milestone 2 foundations for Neon-backed persistence, Clerk authentication, seeded users, and protected role-based routing.
 
 ## Stack
 
@@ -43,7 +43,13 @@ CLERK_SECRET_KEY="sk_test_..."
 npm run prisma:migrate -- --name init-auth
 ```
 
-5. Start the app:
+5. Seed the demo accounts:
+
+```bash
+npm run db:seed
+```
+
+6. Start the app:
 
 ```bash
 npm run dev
@@ -72,6 +78,7 @@ npm install
 cp .env.example .env
 npm run db:up
 npm run prisma:migrate -- --name init-auth
+npm run db:seed
 npm run dev
 ```
 
@@ -88,6 +95,13 @@ npm run start
 ```
 
 This also serves the app at [http://localhost:3000](http://localhost:3000).
+
+## Demo accounts
+
+The Prisma seed script creates these local accounts:
+
+- Admin: `admin@closestwins.local` / `Admin123!`
+- Player: `player@closestwins.local` / `Player123!`
 
 ## Protected routes
 
@@ -121,8 +135,17 @@ npm run format
 
 - `npm run prisma:generate` regenerates the Prisma client
 - `npm run prisma:migrate` runs Prisma migrations in development
+- `npm run db:seed` seeds the demo users
 - `npm run db:up` starts the optional local PostgreSQL container
 - `npm run db:down` stops the optional local PostgreSQL container
+
+## Role-based routes
+
+- `/sign-in` for existing users
+- `/sign-up` for new player accounts
+- `/admin` for admin-only access
+- `/player` for player-only access
+- `/dashboard` as the role-aware redirect entry point
 
 ## Branch naming workflow
 
