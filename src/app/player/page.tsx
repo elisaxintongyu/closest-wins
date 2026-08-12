@@ -1,10 +1,45 @@
 import { CreateTeamForm } from "@/components/player/create-team-form";
+import { JoinCodeForm } from "@/components/player/join-code-form";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { requireRole, syncDatabaseUser } from "@/lib/auth-guards";
+import { prisma } from "@/lib/prisma";
 
-export default async function PlayerPage() {
+function normalizeJoinCode(joinCode: string | string[] | undefined) {
+  if (typeof joinCode !== "string") {
+    return "";
+  }
+
+  return joinCode.trim().toUpperCase();
+}
+
+export default async function PlayerPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ joinCode?: string | string[] }>;
+}) {
   const session = await requireRole("PLAYER");
   await syncDatabaseUser(session);
+  const { joinCode } = await searchParams;
+  const normalizedJoinCode = normalizeJoinCode(joinCode);
+  const selectedGame =
+    normalizedJoinCode.length === 6
+      ? await prisma.game.findUnique({
+          where: {
+            joinCode: normalizedJoinCode,
+          },
+          select: {
+            id: true,
+            title: true,
+            joinCode: true,
+            status: true,
+            _count: {
+              select: {
+                teams: true,
+              },
+            },
+          },
+        })
+      : null;
 
   return (
     <DashboardShell
@@ -23,48 +58,57 @@ export default async function PlayerPage() {
         <section className="space-y-4">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold tracking-[-0.03em] text-stone-950">
-              Start with a join code
+              Find your game
             </h2>
             <p className="text-sm leading-7 text-stone-700">
-              Ask the host for the game&apos;s six-character code, then create a
-              team for that game.
+              Enter the host&apos;s six-character join code to confirm
+              you&apos;re entering the right game.
             </p>
           </div>
 
-          <CreateTeamForm />
+          <JoinCodeForm defaultJoinCode={normalizedJoinCode} />
+
+          {normalizedJoinCode ? (
+            selectedGame ? (
+              <div className="rounded-[1.75rem] border border-emerald-200 bg-emerald-50 p-5">
+                <p className="text-xs font-semibold tracking-[0.18em] text-emerald-700 uppercase">
+                  Game found
+                </p>
+                <h3 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-stone-950">
+                  {selectedGame.title}
+                </h3>
+                <p className="mt-2 text-sm text-stone-700">
+                  Status: {selectedGame.status}
+                </p>
+                <p className="text-sm text-stone-700">
+                  Teams already joined: {selectedGame._count.teams}
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-[1.75rem] border border-red-200 bg-red-50 p-5 text-sm leading-7 text-red-700">
+                No game matched{" "}
+                <span className="font-mono">{normalizedJoinCode}</span>.
+                Double-check the code with the host and try again.
+              </div>
+            )
+          ) : null}
         </section>
 
         <section className="space-y-4">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold tracking-[-0.03em] text-stone-950">
-              What this unlocks
+              Name your team
             </h2>
             <p className="text-sm leading-7 text-stone-700">
-              Team creation is now persistent, so the next branches can add
-              join, lobby, and gameplay routes on top of the same records.
+              Once the join code checks out, create the team that will compete
+              in this game.
             </p>
           </div>
 
-          <div className="space-y-3">
-            <article className="rounded-[1.75rem] border border-stone-200 bg-white p-5">
-              <p className="text-sm font-semibold tracking-[0.16em] text-stone-500 uppercase">
-                Persistent teams
-              </p>
-              <p className="mt-3 text-sm leading-7 text-stone-700">
-                Creating a team now stores a captain, a game membership, and a
-                durable team record in PostgreSQL.
-              </p>
-            </article>
-            <article className="rounded-[1.75rem] border border-stone-200 bg-white p-5">
-              <p className="text-sm font-semibold tracking-[0.16em] text-stone-500 uppercase">
-                Ready for lobby flow
-              </p>
-              <p className="mt-3 text-sm leading-7 text-stone-700">
-                The same data model can support team lists, waiting-room views,
-                and round gameplay without another schema reset.
-              </p>
-            </article>
-          </div>
+          <CreateTeamForm
+            joinCode={selectedGame?.joinCode}
+            gameTitle={selectedGame?.title}
+          />
         </section>
       </div>
     </DashboardShell>
