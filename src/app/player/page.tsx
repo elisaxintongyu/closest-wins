@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CreateTeamForm } from "@/components/player/create-team-form";
 import { JoinCodeForm } from "@/components/player/join-code-form";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
@@ -18,7 +19,7 @@ export default async function PlayerPage({
   searchParams: Promise<{ joinCode?: string | string[] }>;
 }) {
   const session = await requireRole("PLAYER");
-  await syncDatabaseUser(session);
+  const player = await syncDatabaseUser(session);
   const { joinCode } = await searchParams;
   const normalizedJoinCode = normalizeJoinCode(joinCode);
   const selectedGame =
@@ -40,6 +41,30 @@ export default async function PlayerPage({
           },
         })
       : null;
+  const memberships = await prisma.teamMembership.findMany({
+    where: {
+      userId: player.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      gameId: true,
+      team: {
+        select: {
+          id: true,
+          name: true,
+          game: {
+            select: {
+              title: true,
+              joinCode: true,
+              status: true,
+            },
+          },
+        },
+      },
+    },
+  });
 
   return (
     <DashboardShell
@@ -109,6 +134,55 @@ export default async function PlayerPage({
             joinCode={selectedGame?.joinCode}
             gameTitle={selectedGame?.title}
           />
+
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <h3 className="text-xl font-semibold tracking-[-0.03em] text-stone-950">
+                Your game pages
+              </h3>
+              <p className="text-sm leading-7 text-stone-700">
+                Jump back into any game you&apos;ve already joined.
+              </p>
+            </div>
+
+            {memberships.length === 0 ? (
+              <div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 p-5 text-sm leading-7 text-stone-600">
+                No active game pages yet. Join a game above to create your first
+                team home.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {memberships.map((membership) => (
+                  <article
+                    key={membership.team.id}
+                    className="rounded-[1.75rem] border border-stone-200 bg-white p-5"
+                  >
+                    <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
+                      {membership.team.game.status}
+                    </p>
+                    <h4 className="mt-2 text-xl font-semibold text-stone-950">
+                      {membership.team.name}
+                    </h4>
+                    <p className="mt-1 text-sm text-stone-700">
+                      Game: {membership.team.game.title}
+                    </p>
+                    <p className="text-sm text-stone-700">
+                      Join code:{" "}
+                      <span className="font-mono">
+                        {membership.team.game.joinCode}
+                      </span>
+                    </p>
+                    <Link
+                      href={`/player/games/${membership.gameId}`}
+                      className="mt-4 inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-stone-950 px-4 py-2 text-sm font-semibold text-amber-50 transition hover:bg-stone-800"
+                    >
+                      Open player game page
+                    </Link>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
         </section>
       </div>
     </DashboardShell>
