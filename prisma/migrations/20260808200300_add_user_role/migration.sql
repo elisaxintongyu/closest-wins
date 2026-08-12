@@ -1,4 +1,2 @@
-CREATE TYPE "Role" AS ENUM ('ADMIN', 'PLAYER');
-
-ALTER TABLE "User"
-ADD COLUMN "role" "Role" NOT NULL DEFAULT 'PLAYER';
+-- No-op migration.
+-- The Role enum and role column already exist in the baseline auth migration.

@@ -7,6 +7,7 @@ export type GuardedSession = {
   role: "ADMIN" | "PLAYER";
   userName: string;
   email: string;
+  databaseUserId: string | null;
 };
 
 export async function requireSession(): Promise<GuardedSession> {
@@ -25,7 +26,7 @@ export async function requireSession(): Promise<GuardedSession> {
 
   const dbUser = await prisma.user.findUnique({
     where: { email },
-    select: { role: true, name: true, email: true },
+    select: { id: true, role: true, name: true, email: true },
   });
 
   const role = dbUser?.role ?? "PLAYER";
@@ -35,6 +36,7 @@ export async function requireSession(): Promise<GuardedSession> {
     role,
     userName,
     email,
+    databaseUserId: dbUser?.id ?? null,
   };
 }
 

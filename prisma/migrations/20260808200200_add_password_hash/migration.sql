@@ -1,2 +1,2 @@
-ALTER TABLE "User"
-ADD COLUMN "passwordHash" TEXT;
+-- No-op migration.
+-- The passwordHash column already exists in the baseline auth migration.
