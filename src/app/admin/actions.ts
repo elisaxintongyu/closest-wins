@@ -63,3 +63,117 @@ export async function createGame(formData: FormData) {
   revalidatePath("/admin");
   redirect("/admin");
 }
+
+async function requireOwnedGame(gameId: string, createdById: string) {
+  const game = await prisma.game.findFirst({
+    where: {
+      id: gameId,
+      createdById,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!game) {
+    throw new Error("Game not found.");
+  }
+
+  return game;
+}
+
+async function requireOwnedQuestion(questionId: string, createdById: string) {
+  const question = await prisma.question.findFirst({
+    where: {
+      id: questionId,
+      game: {
+        createdById,
+      },
+    },
+    select: {
+      id: true,
+      gameId: true,
+    },
+  });
+
+  if (!question) {
+    throw new Error("Question not found.");
+  }
+
+  return question;
+}
+
+export async function createQuestion(gameId: string, formData: FormData) {
+  const createdById = await requireAdminDatabaseUserId();
+  await requireOwnedGame(gameId, createdById);
+
+  const promptValue = formData.get("prompt");
+  const answerValue = formData.get("correctAnswer");
+  const explanationValue = formData.get("explanation");
+  const prompt = typeof promptValue === "string" ? promptValue.trim() : "";
+  const explanation =
+    typeof explanationValue === "string" ? explanationValue.trim() : "";
+  const correctAnswer =
+    typeof answerValue === "string" ? Number(answerValue) : Number.NaN;
+
+  if (!prompt || !Number.isFinite(correctAnswer)) {
+    throw new Error("Question prompt and numerical answer are required.");
+  }
+
+  const orderAggregate = await prisma.question.aggregate({
+    where: { gameId },
+    _max: { order: true },
+  });
+
+  await prisma.question.create({
+    data: {
+      gameId,
+      prompt,
+      correctAnswer,
+      explanation: explanation || null,
+      order: (orderAggregate._max.order ?? 0) + 1,
+    },
+  });
+
+  revalidatePath(`/admin/games/${gameId}`);
+}
+
+export async function updateQuestion(questionId: string, formData: FormData) {
+  const createdById = await requireAdminDatabaseUserId();
+  const question = await requireOwnedQuestion(questionId, createdById);
+
+  const promptValue = formData.get("prompt");
+  const answerValue = formData.get("correctAnswer");
+  const explanationValue = formData.get("explanation");
+  const prompt = typeof promptValue === "string" ? promptValue.trim() : "";
+  const explanation =
+    typeof explanationValue === "string" ? explanationValue.trim() : "";
+  const correctAnswer =
+    typeof answerValue === "string" ? Number(answerValue) : Number.NaN;
+
+  if (!prompt || !Number.isFinite(correctAnswer)) {
+    throw new Error("Question prompt and numerical answer are required.");
+  }
+
+  await prisma.question.update({
+    where: { id: question.id },
+    data: {
+      prompt,
+      correctAnswer,
+      explanation: explanation || null,
+    },
+  });
+
+  revalidatePath(`/admin/games/${question.gameId}`);
+}
+
+export async function deleteQuestion(questionId: string) {
+  const createdById = await requireAdminDatabaseUserId();
+  const question = await requireOwnedQuestion(questionId, createdById);
+
+  await prisma.question.delete({
+    where: { id: question.id },
+  });
+
+  revalidatePath(`/admin/games/${question.gameId}`);
+}

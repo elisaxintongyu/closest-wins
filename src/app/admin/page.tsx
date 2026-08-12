@@ -18,6 +18,11 @@ export default async function AdminPage() {
           title: true,
           joinCode: true,
           status: true,
+          _count: {
+            select: {
+              questions: true,
+            },
+          },
         },
       })
     : [];
@@ -79,6 +84,15 @@ export default async function AdminPage() {
                   <p className="text-sm text-stone-700">
                     Status: {game.status}
                   </p>
+                  <p className="text-sm text-stone-700">
+                    Questions: {game._count.questions}
+                  </p>
+                  <a
+                    href={`/admin/games/${game.id}`}
+                    className="mt-3 inline-flex items-center justify-center rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white"
+                  >
+                    Manage questions
+                  </a>
                 </article>
               ))}
             </div>
