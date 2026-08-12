@@ -20,6 +20,13 @@ enum GameStatus {
   COMPLETED
 }
 
+enum QuestionStatus {
+  HIDDEN
+  OPEN
+  CLOSED
+  REVEALED
+}
+
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -42,11 +49,28 @@ model Game {
   status      GameStatus @default(DRAFT)
   createdById String
   createdBy   User       @relation("GameCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  questions   Question[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
   @@index([createdById])
   @@index([status])
+}
+
+model Question {
+  id            String         @id @default(cuid())
+  gameId        String
+  prompt        String
+  correctAnswer Float
+  explanation   String?
+  order         Int
+  status        QuestionStatus @default(HIDDEN)
+  game          Game           @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@unique([gameId, order])
+  @@index([gameId])
 }
 
 model Account {
