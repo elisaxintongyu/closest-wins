@@ -1,6 +1,6 @@
 # Closest Wins
 
-`closest-wins` is a Next.js App Router project for the Closest Wins game. Milestone 1 establishes the frontend foundation, code quality tooling, and collaboration standards for the rest of the build.
+`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch uses Prisma with PostgreSQL and is now configured to work cleanly with a remote Neon database.
 
 ## Stack
 
@@ -8,8 +8,8 @@
 - React 19
 - TypeScript 5
 - Tailwind CSS 4
-- ESLint 9
-- Prettier 3
+- Prisma ORM with PostgreSQL
+- ESLint 9 and Prettier 3
 
 ## Local development
 
@@ -19,13 +19,34 @@
 npm install
 ```
 
-2. Start the development server:
+2. Copy the environment template:
+
+```bash
+cp .env.example .env
+```
+
+3. Add your Neon connection strings to `.env`:
+
+```bash
+DATABASE_URL="postgresql://USER:PASSWORD@EP-XXXX-POOLER.us-west-2.aws.neon.tech/closest_wins?sslmode=require&pgbouncer=true&connect_timeout=15&schema=public"
+DIRECT_URL="postgresql://USER:PASSWORD@EP-XXXX.us-west-2.aws.neon.tech/closest_wins?sslmode=require&connect_timeout=15&schema=public"
+```
+
+Use the pooled Neon URL for `DATABASE_URL` and the non-pooled direct Neon URL for `DIRECT_URL` so Prisma Client and Prisma Migrate both work reliably.
+
+4. Create the database schema in Neon:
+
+```bash
+npm run prisma:migrate -- --name init-auth
+```
+
+5. Start the app:
 
 ```bash
 npm run dev
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000).
+The app runs at [http://localhost:3000](http://localhost:3000).
 
 ## Quality checks
 
@@ -41,13 +62,12 @@ To apply formatting changes:
 npm run format
 ```
 
-## Collaboration templates
+## Database scripts
 
-The repo includes:
-
-- Bug report issue template
-- Feature request issue template
-- Pull request template
+- `npm run prisma:generate` regenerates the Prisma client
+- `npm run prisma:migrate` runs Prisma migrations in development
+- `npm run db:up` starts the optional local PostgreSQL container
+- `npm run db:down` stops the optional local PostgreSQL container
 
 ## Branch naming workflow
 
@@ -68,6 +88,16 @@ Accepted branch patterns:
 
 Use lowercase words with hyphens when possible, for example `feature/landing-page` or `fix/signup-validation`.
 
+## Collaboration templates
+
+The repo includes:
+
+- Bug report issue template
+- Feature request issue template
+- Pull request template
+
+These live under [`.github/`](/Users/elisayu/Desktop/closest-wins/.github).
+
 ## Deployment
 
 The initial production deployment was shipped to Vercel on August 8, 2026.
@@ -76,3 +106,10 @@ The initial production deployment was shipped to Vercel on August 8, 2026.
 - Deploy command: `vercel --prod`
 
 Before future deployments, make sure the Vercel project is linked locally and that the branch is in a reviewable state.
+
+## Environment variables
+
+This branch expects these database variables:
+
+- `DATABASE_URL`
+- `DIRECT_URL`
