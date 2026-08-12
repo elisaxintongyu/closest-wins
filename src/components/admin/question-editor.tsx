@@ -1,4 +1,10 @@
+"use client";
+
+import { useActionState } from "react";
 import { deleteQuestion, updateQuestion } from "@/app/admin/actions";
+import { FieldErrors, FormMessage } from "@/components/admin/form-feedback";
+import { SubmitButton } from "@/components/admin/submit-button";
+import { initialActionState } from "@/lib/admin-validation";
 
 type QuestionEditorProps = {
   question: {
@@ -14,6 +20,10 @@ type QuestionEditorProps = {
 export function QuestionEditor({ question }: QuestionEditorProps) {
   const updateQuestionById = updateQuestion.bind(null, question.id);
   const deleteQuestionById = deleteQuestion.bind(null, question.id);
+  const [state, formAction] = useActionState(
+    updateQuestionById,
+    initialActionState
+  );
 
   return (
     <article className="space-y-4 rounded-2xl border p-4">
@@ -24,7 +34,7 @@ export function QuestionEditor({ question }: QuestionEditorProps) {
         <p className="text-xs text-stone-600">Status: {question.status}</p>
       </div>
 
-      <form action={updateQuestionById} className="space-y-4">
+      <form action={formAction} className="space-y-4">
         <div className="space-y-2">
           <label
             htmlFor={`prompt-${question.id}`}
@@ -38,8 +48,8 @@ export function QuestionEditor({ question }: QuestionEditorProps) {
             rows={4}
             defaultValue={question.prompt}
             className="w-full rounded-lg border px-3 py-2"
-            required
           />
+          <FieldErrors state={state} field="prompt" />
         </div>
 
         <div className="space-y-2">
@@ -56,8 +66,8 @@ export function QuestionEditor({ question }: QuestionEditorProps) {
             step="any"
             defaultValue={question.correctAnswer}
             className="w-full rounded-lg border px-3 py-2"
-            required
           />
+          <FieldErrors state={state} field="correctAnswer" />
         </div>
 
         <div className="space-y-2">
@@ -74,15 +84,18 @@ export function QuestionEditor({ question }: QuestionEditorProps) {
             defaultValue={question.explanation ?? ""}
             className="w-full rounded-lg border px-3 py-2"
           />
+          <FieldErrors state={state} field="explanation" />
         </div>
 
+        <FormMessage state={state} />
+
         <div className="flex flex-wrap gap-3">
-          <button
-            type="submit"
-            className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white"
+          <SubmitButton
+            pendingLabel="Saving..."
+            className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
           >
             Save changes
-          </button>
+          </SubmitButton>
 
           <button
             type="submit"
