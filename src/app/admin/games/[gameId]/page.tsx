@@ -75,7 +75,8 @@ export default async function AdminGamePage({
               Add a question
             </h2>
             <p className="text-sm leading-7 text-stone-700">
-              New questions are appended to the end of this game&apos;s list.
+              New questions are appended to the bottom of the set and can then
+              be moved into place.
             </p>
           </div>
 
@@ -88,7 +89,7 @@ export default async function AdminGamePage({
               Question list
             </h2>
             <p className="text-sm leading-7 text-stone-700">
-              Edit prompts, answers, and explanations inline.
+              Reorder questions with the move buttons and save edits inline.
             </p>
           </div>
 
@@ -98,8 +99,13 @@ export default async function AdminGamePage({
             </div>
           ) : (
             <div className="space-y-4">
-              {game.questions.map((question) => (
-                <QuestionEditor key={question.id} question={question} />
+              {game.questions.map((question, index) => (
+                <QuestionEditor
+                  key={question.id}
+                  question={question}
+                  canMoveUp={index > 0}
+                  canMoveDown={index < game.questions.length - 1}
+                />
               ))}
             </div>
           )}
