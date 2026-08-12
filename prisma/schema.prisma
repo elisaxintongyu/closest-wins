@@ -3,14 +3,21 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 enum Role {
   ADMIN
   PLAYER
+}
+
+enum GameStatus {
+  DRAFT
+  LOBBY
+  IN_PROGRESS
+  COMPLETED
 }
 
 model User {
@@ -23,8 +30,23 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  createdGames  Game[]    @relation("GameCreator")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+}
+
+model Game {
+  id          String     @id @default(cuid())
+  title       String
+  joinCode    String     @unique
+  status      GameStatus @default(DRAFT)
+  createdById String
+  createdBy   User       @relation("GameCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([createdById])
+  @@index([status])
 }
 
 model Account {
