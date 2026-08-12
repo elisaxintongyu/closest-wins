@@ -32,10 +32,24 @@ export default async function PlayerLobbyPage({
           title: true,
           joinCode: true,
           status: true,
-          createdAt: true,
           _count: {
             select: {
               teams: true,
+            },
+          },
+          teams: {
+            orderBy: {
+              createdAt: "asc",
+            },
+            select: {
+              id: true,
+              name: true,
+              createdAt: true,
+              _count: {
+                select: {
+                  memberships: true,
+                },
+              },
             },
           },
         },
@@ -105,6 +119,57 @@ export default async function PlayerLobbyPage({
           </Link>
         </section>
       </div>
+
+      <section className="rounded-[1.75rem] border border-stone-200 bg-white p-6">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
+              Participating teams
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-stone-950">
+              Who&apos;s in the lobby
+            </h2>
+          </div>
+          <p className="text-sm text-stone-600">
+            {membership.game.teams.length} team
+            {membership.game.teams.length === 1 ? "" : "s"} joined
+          </p>
+        </div>
+
+        <div className="mt-5 grid gap-3 md:grid-cols-2">
+          {membership.game.teams.map((team) => {
+            const isCurrentTeam = team.id === membership.team.id;
+
+            return (
+              <article
+                key={team.id}
+                className={`rounded-[1.5rem] border p-5 ${
+                  isCurrentTeam
+                    ? "border-amber-300 bg-amber-50"
+                    : "border-stone-200 bg-stone-50"
+                }`}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-lg font-semibold text-stone-950">
+                      {team.name}
+                    </p>
+                    <p className="text-sm text-stone-600">
+                      {team._count.memberships} member
+                      {team._count.memberships === 1 ? "" : "s"}
+                    </p>
+                  </div>
+                  {isCurrentTeam ? (
+                    <span className="rounded-full border border-amber-300 bg-white px-3 py-1 text-xs font-semibold tracking-[0.16em] text-amber-700 uppercase">
+                      Your team
+                    </span>
+                  ) : null}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
     </DashboardShell>
   );
 }
