@@ -1,6 +1,6 @@
 # Closest Wins
 
-`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch connects Neon-backed Prisma data access with Clerk authentication for sign-in, sign-up, and session handling.
+`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch adds explicit admin and player roles on top of the Neon-backed Prisma and Clerk authentication foundation.
 
 ## Stack
 
@@ -37,7 +37,13 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
 CLERK_SECRET_KEY="sk_test_..."
 ```
 
-4. Start the app against Neon:
+4. Create the database schema:
+
+```bash
+npm run prisma:migrate -- --name init-auth
+```
+
+5. Start the app:
 
 ```bash
 npm run dev
@@ -83,10 +89,11 @@ npm run start
 
 This also serves the app at [http://localhost:3000](http://localhost:3000).
 
-## Authentication routes
+## Role-aware routes
 
-- `/sign-in` for existing users
-- `/sign-up` for new users
+- `/dashboard` redirects signed-in users toward the correct destination for their role
+- `/admin` is the administrator destination
+- `/player` is the player destination
 
 ## Deployed site
 
@@ -157,7 +164,7 @@ Before future deployments, make sure the Vercel project is linked locally and th
 
 ## Deployment notes
 
-For this branch, make sure local or production environments have:
+For Milestone 2, make sure production has:
 
 - `DATABASE_URL`
 - `DIRECT_URL`

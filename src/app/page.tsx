@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
@@ -11,8 +12,8 @@ export default function Home() {
               Closest Wins
             </p>
             <p className="mt-1 text-sm text-stone-700">
-              The app now uses Clerk authentication on top of the Prisma and
-              PostgreSQL foundation.
+              The app now uses Clerk authentication on top of Prisma, Neon, and
+              explicit admin/player roles.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -35,6 +36,12 @@ export default function Home() {
               </SignUpButton>
             </Show>
             <Show when="signed-in">
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-amber-50 transition hover:bg-stone-800"
+              >
+                Open dashboard
+              </Link>
               <div className="flex items-center gap-3 rounded-full border border-stone-900/10 bg-white/80 px-3 py-2">
                 <span className="text-sm font-medium text-stone-700">
                   Signed in
@@ -52,13 +59,12 @@ export default function Home() {
             </p>
             <div className="space-y-5">
               <h1 className="max-w-3xl text-5xl font-semibold tracking-[-0.045em] sm:text-6xl lg:text-7xl">
-                Authentication is now part of the product foundation.
+                Role-based access is now part of the app&apos;s core flow.
               </h1>
               <p className="max-w-2xl text-lg leading-8 text-stone-700 sm:text-xl">
-                Users can register and sign in with Clerk. Authentication UI,
-                sessions, and account management now come from Clerk while
-                Prisma remains connected to the Neon-backed application data
-                layer.
+                Users now carry explicit admin or player roles in the Prisma
+                data model, while Clerk continues to handle sign-in, sign-up,
+                and session management for the app.
               </p>
             </div>
 
@@ -68,8 +74,8 @@ export default function Home() {
                   Data
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  Prisma stays connected to PostgreSQL for application data and
-                  future game state.
+                  Prisma, Neon, and the role-aware user schema now work
+                  together as the application foundation.
                 </p>
               </div>
               <div className="rounded-[1.75rem] border border-stone-900/10 bg-white/70 p-5 shadow-[0_20px_60px_rgba(120,53,15,0.1)] backdrop-blur">
@@ -77,17 +83,17 @@ export default function Home() {
                   Auth
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  Clerk now powers sign-in, sign-up, session management, and
+                  Clerk powers sign-in, sign-up, session management, and
                   account UI in this branch.
                 </p>
               </div>
               <div className="rounded-[1.75rem] border border-stone-900/10 bg-white/70 p-5 shadow-[0_20px_60px_rgba(120,53,15,0.1)] backdrop-blur">
                 <p className="text-sm font-semibold tracking-[0.18em] text-stone-500 uppercase">
-                  Next step
+                  Access
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  Role-specific pages and access controls come next in the
-                  stack.
+                  Separate admin, player, and dashboard destinations are now
+                  part of the app structure.
                 </p>
               </div>
             </div>
@@ -99,16 +105,14 @@ export default function Home() {
             </p>
             <ul className="mt-6 space-y-4">
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Clerk-hosted sign-in and sign-up flows mounted on the existing
-                App Router routes.
+                A `Role` enum and default player role in the Prisma schema.
               </li>
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Clerk provider, user session UI, and route protection via
-                `proxy.ts`.
+                Clerk-backed auth flows plus role-aware app destinations.
               </li>
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Neon-backed Prisma configuration preserved for the rest of the
-                product stack.
+                Distinct `/admin`, `/player`, and `/dashboard` routes for the
+                next access-control step.
               </li>
             </ul>
           </aside>
