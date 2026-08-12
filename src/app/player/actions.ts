@@ -81,11 +81,7 @@ export async function createTeam(
   });
 
   if (existingMembership) {
-    return buildErrorState("You have already joined this game.", {
-      joinCode: [
-        "Use the same game from your player area once its page is added.",
-      ],
-    });
+    redirect(`/player/games/${game.id}`);
   }
 
   const existingTeam = await prisma.team.findFirst({
@@ -127,5 +123,5 @@ export async function createTeam(
   });
 
   revalidatePath("/player");
-  redirect(`/player/lobby/${game.id}?team=${team.id}`);
+  redirect(`/player/games/${game.id}?team=${team.id}`);
 }
