@@ -38,6 +38,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   createdGames  Game[]    @relation("GameCreator")
+  captainedTeams Team[]   @relation("TeamCaptain")
+  teamMemberships TeamMembership[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -50,11 +52,46 @@ model Game {
   createdById String
   createdBy   User       @relation("GameCreator", fields: [createdById], references: [id], onDelete: Restrict)
   questions   Question[]
+  teams       Team[]
+  memberships TeamMembership[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
   @@index([createdById])
   @@index([status])
+}
+
+model Team {
+  id          String           @id @default(cuid())
+  gameId      String
+  captainId   String
+  name        String
+  game        Game             @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  captain     User             @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: Restrict)
+  memberships TeamMembership[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([gameId, name])
+  @@index([gameId])
+  @@index([captainId])
+}
+
+model TeamMembership {
+  id        String   @id @default(cuid())
+  gameId    String
+  teamId    String
+  userId    String
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([gameId, userId])
+  @@unique([teamId, userId])
+  @@index([gameId])
+  @@index([teamId])
+  @@index([userId])
 }
 
 model Question {
