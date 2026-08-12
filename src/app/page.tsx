@@ -12,8 +12,8 @@ export default function Home() {
               Closest Wins
             </p>
             <p className="mt-1 text-sm text-stone-700">
-              The app now uses Clerk authentication on top of Prisma, Neon, and
-              explicit admin/player roles.
+              Milestone 2 now includes protected, role-aware app routes on top
+              of Clerk, Prisma, and Neon.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -62,9 +62,8 @@ export default function Home() {
                 Role-based access is now part of the app&apos;s core flow.
               </h1>
               <p className="max-w-2xl text-lg leading-8 text-stone-700 sm:text-xl">
-                Users now carry explicit admin or player roles in the Prisma
-                data model, while Clerk continues to handle sign-in, sign-up,
-                and session management for the app.
+                Prisma models, Neon-backed data, Clerk sign-in, and strict
+                admin-versus-player routing are now wired together in the app.
               </p>
             </div>
 
@@ -83,8 +82,8 @@ export default function Home() {
                   Auth
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  Clerk powers sign-in, sign-up, session management, and
-                  account UI in this branch.
+                  Clerk powers sign-in, sign-up, session management, and role
+                  entry into the app.
                 </p>
               </div>
               <div className="rounded-[1.75rem] border border-stone-900/10 bg-white/70 p-5 shadow-[0_20px_60px_rgba(120,53,15,0.1)] backdrop-blur">
@@ -92,8 +91,7 @@ export default function Home() {
                   Access
                 </p>
                 <p className="mt-3 text-sm leading-7 text-stone-700">
-                  Separate admin, player, and dashboard destinations are now
-                  part of the app structure.
+                  Protected admin and player dashboards with route-level guards.
                 </p>
               </div>
             </div>
@@ -105,14 +103,16 @@ export default function Home() {
             </p>
             <ul className="mt-6 space-y-4">
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                A `Role` enum and default player role in the Prisma schema.
+                A Next.js proxy that rejects unauthenticated access to
+                restricted app areas.
               </li>
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Clerk-backed auth flows plus role-aware app destinations.
+                Route guards that redirect admins and players to the correct
+                destinations.
               </li>
               <li className="rounded-2xl border border-stone-900/10 bg-stone-50/80 p-4 text-sm leading-7 text-stone-700">
-                Distinct `/admin`, `/player`, and `/dashboard` routes for the
-                next access-control step.
+                Dashboard pages that now enforce role-based access instead of
+                just displaying role-aware content.
               </li>
             </ul>
           </aside>

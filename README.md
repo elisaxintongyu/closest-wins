@@ -1,6 +1,6 @@
 # Closest Wins
 
-`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch adds explicit admin and player roles on top of the Neon-backed Prisma and Clerk authentication foundation.
+`closest-wins` is a Next.js App Router project for the Closest Wins game. This branch focuses on enforcing protected, role-aware routing on top of the Neon-backed Prisma and Clerk authentication foundation.
 
 ## Stack
 
@@ -89,11 +89,11 @@ npm run start
 
 This also serves the app at [http://localhost:3000](http://localhost:3000).
 
-## Role-aware routes
+## Protected routes
 
-- `/dashboard` redirects signed-in users toward the correct destination for their role
-- `/admin` is the administrator destination
-- `/player` is the player destination
+- `/admin` requires an authenticated admin user
+- `/player` requires an authenticated player user
+- `/dashboard` redirects authenticated users to the correct destination
 
 ## Deployed site
 
