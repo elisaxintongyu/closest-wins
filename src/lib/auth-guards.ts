@@ -49,3 +49,40 @@ export async function requireRole(role: "ADMIN" | "PLAYER") {
 
   return session;
 }
+
+export async function syncDatabaseUser(session: GuardedSession) {
+  if (session.databaseUserId) {
+    return prisma.user.update({
+      where: { id: session.databaseUserId },
+      data: {
+        name: session.userName,
+      },
+      select: {
+        id: true,
+        role: true,
+        email: true,
+        name: true,
+      },
+    });
+  }
+
+  return prisma.user.upsert({
+    where: {
+      email: session.email,
+    },
+    update: {
+      name: session.userName,
+    },
+    create: {
+      email: session.email,
+      name: session.userName,
+      role: session.role,
+    },
+    select: {
+      id: true,
+      role: true,
+      email: true,
+      name: true,
+    },
+  });
+}
