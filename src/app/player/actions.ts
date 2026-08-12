@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireRole, syncDatabaseUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import {
@@ -106,8 +107,8 @@ export async function createTeam(
     });
   }
 
-  await prisma.$transaction(async (tx) => {
-    await tx.team.create({
+  const team = await prisma.$transaction(async (tx) => {
+    return tx.team.create({
       data: {
         gameId: game.id,
         captainId: player.id,
@@ -126,9 +127,5 @@ export async function createTeam(
   });
 
   revalidatePath("/player");
-
-  return {
-    status: "success",
-    message: `Team "${normalizedName}" is ready for ${game.title}.`,
-  };
+  redirect(`/player/lobby/${game.id}?team=${team.id}`);
 }
