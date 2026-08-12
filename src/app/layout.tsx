@@ -3,17 +3,14 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Closest Wins",
-  description: "Project setup for the Closest Wins game.",
+  description:
+    "A production-ready Next.js starter for the Closest Wins project.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className="h-full antialiased">
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }
