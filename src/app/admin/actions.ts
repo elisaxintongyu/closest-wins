@@ -119,6 +119,7 @@ async function requireOwnedQuestion(questionId: string, createdById: string) {
     },
     select: {
       id: true,
+      order: true,
       gameId: true,
     },
   });
@@ -212,9 +213,78 @@ export async function deleteQuestion(questionId: string) {
   const createdById = await requireAdminDatabaseUserId();
   const question = await requireOwnedQuestion(questionId, createdById);
 
-  await prisma.question.delete({
-    where: { id: question.id },
+  await prisma.$transaction(async (tx) => {
+    await tx.question.delete({
+      where: { id: question.id },
+    });
+
+    await tx.question.updateMany({
+      where: {
+        gameId: question.gameId,
+        order: {
+          gt: question.order,
+        },
+      },
+      data: {
+        order: {
+          decrement: 1,
+        },
+      },
+    });
   });
 
   revalidatePath(`/admin/games/${question.gameId}`);
+}
+
+async function moveQuestion(questionId: string, direction: "up" | "down") {
+  const createdById = await requireAdminDatabaseUserId();
+  const question = await requireOwnedQuestion(questionId, createdById);
+  const targetOrder =
+    direction === "up" ? question.order - 1 : question.order + 1;
+
+  if (targetOrder < 1) {
+    return;
+  }
+
+  const swapQuestion = await prisma.question.findFirst({
+    where: {
+      gameId: question.gameId,
+      order: targetOrder,
+    },
+    select: {
+      id: true,
+      order: true,
+    },
+  });
+
+  if (!swapQuestion) {
+    return;
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.question.update({
+      where: { id: question.id },
+      data: { order: 0 },
+    });
+
+    await tx.question.update({
+      where: { id: swapQuestion.id },
+      data: { order: question.order },
+    });
+
+    await tx.question.update({
+      where: { id: question.id },
+      data: { order: swapQuestion.order },
+    });
+  });
+
+  revalidatePath(`/admin/games/${question.gameId}`);
+}
+
+export async function moveQuestionUp(questionId: string) {
+  await moveQuestion(questionId, "up");
+}
+
+export async function moveQuestionDown(questionId: string) {
+  await moveQuestion(questionId, "down");
 }
