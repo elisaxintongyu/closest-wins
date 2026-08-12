@@ -61,7 +61,8 @@ User management and authentication:
 
 Deployment:
 - Production deploys run on Vercel.
-- As of Wednesday, August 12, 2026, the latest known production deployment URL is `https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app`.
+- As of Wednesday, August 12, 2026, the current verified production alias is `https://closest-wins-ashen.vercel.app`.
+- Production also depends on Vercel env vars for Neon and Clerk; if the site fails at runtime with a missing Clerk key, verify the production env set before redeploying.
 
 ## Local Setup Expectations
 
@@ -88,8 +89,8 @@ The local app URL is [http://localhost:3000](http://localhost:3000).
 
 ## Deployed Site
 
-As of Sunday, August 9, 2026, the latest production deployment is:
+As of Wednesday, August 12, 2026, the verified production site is:
 
-- [https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app](https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app)
+- [https://closest-wins-ashen.vercel.app](https://closest-wins-ashen.vercel.app)
 
 Treat that as the current deployed site unless a newer production deployment is verified.

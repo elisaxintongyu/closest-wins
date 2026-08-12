@@ -111,11 +111,12 @@ The Prisma seed script creates these local accounts:
 
 ## Deployed site
 
-The latest production deployment I found on Sunday, August 9, 2026 is:
+The latest verified production deployment as of Wednesday, August 12, 2026 is:
 
-- [https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app](https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app)
+- [https://closest-wins-ashen.vercel.app](https://closest-wins-ashen.vercel.app)
 
-This is the current production deployment URL, not a custom domain.
+This is the current production alias. The older deployment-specific URLs may
+change between production releases.
 
 ## Quality checks
 
@@ -178,16 +179,18 @@ These live under [`.github/`](/Users/elisayu/Desktop/closest-wins/.github).
 
 ## Deployment
 
-The initial production deployment was shipped to Vercel on August 8, 2026.
+Production runs on Vercel.
 
-- Production URL: [closest-wins-ashen.vercel.app](https://closest-wins-ashen.vercel.app)
-- Deploy command: `vercel --prod`
+- Current production URL: [https://closest-wins-ashen.vercel.app](https://closest-wins-ashen.vercel.app)
+- Recommended deploy command: `npx vercel@latest --prod`
 
-Before future deployments, make sure the Vercel project is linked locally and that the branch is in a reviewable state.
+Before future deployments, make sure the Vercel project is linked locally, the
+production env vars are set in Vercel, and the branch is in a reviewable state.
 
 ## Deployment notes
 
-For Milestone 2, make sure production has:
+As of Wednesday, August 12, 2026, the production deployment requires these
+Vercel environment variables:
 
 - `DATABASE_URL`
 - `DIRECT_URL`
@@ -197,3 +200,7 @@ For Milestone 2, make sure production has:
 - `NEXT_PUBLIC_CLERK_SIGN_UP_URL`
 - `CLERK_SIGN_IN_FALLBACK_REDIRECT_URL`
 - `CLERK_SIGN_UP_FALLBACK_REDIRECT_URL`
+
+If production starts returning Clerk runtime errors such as a missing
+publishable key, first verify that these values are present in the Vercel
+project settings and then trigger a fresh production deploy.
