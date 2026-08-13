@@ -5,6 +5,7 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { RevealedAnswerPanel } from "@/components/player/revealed-answer-panel";
 import { SubmitGuessForm } from "@/components/player/submit-guess-form";
 import { requireRole, syncDatabaseUser } from "@/lib/auth-guards";
+import { getQuestionWinners } from "@/lib/gameplay";
 import { prisma } from "@/lib/prisma";
 
 export default async function PlayerGamePage({
@@ -104,8 +105,22 @@ export default async function PlayerGamePage({
       prompt: true,
       correctAnswer: true,
       explanation: true,
+      guesses: {
+        select: {
+          value: true,
+          team: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
+  const revealedWinners = revealedQuestion
+    ? getQuestionWinners(revealedQuestion)
+    : [];
 
   return (
     <DashboardShell
@@ -155,7 +170,10 @@ export default async function PlayerGamePage({
             ) : null}
           </ActiveQuestionPanel>
 
-          <RevealedAnswerPanel revealedQuestion={revealedQuestion} />
+          <RevealedAnswerPanel
+            revealedQuestion={revealedQuestion}
+            winners={revealedWinners}
+          />
         </div>
 
         <section className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-6">
