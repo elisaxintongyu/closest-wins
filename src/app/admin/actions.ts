@@ -379,3 +379,37 @@ export async function closeQuestionRound(questionId: string) {
   revalidatePath(`/player/games/${question.gameId}`);
   revalidatePath(`/player/lobby/${question.gameId}`);
 }
+
+export async function revealQuestionRound(questionId: string) {
+  const createdById = await requireAdminDatabaseUserId();
+  const question = await prisma.question.findFirst({
+    where: {
+      id: questionId,
+      status: "CLOSED",
+      game: {
+        createdById,
+      },
+    },
+    select: {
+      id: true,
+      gameId: true,
+    },
+  });
+
+  if (!question) {
+    throw new Error("Question is not ready to reveal.");
+  }
+
+  await prisma.question.update({
+    where: {
+      id: question.id,
+    },
+    data: {
+      status: "REVEALED",
+    },
+  });
+
+  revalidatePath(`/admin/games/${question.gameId}`);
+  revalidatePath(`/player/games/${question.gameId}`);
+  revalidatePath(`/player/lobby/${question.gameId}`);
+}

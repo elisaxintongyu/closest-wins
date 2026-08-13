@@ -156,6 +156,7 @@ export default async function AdminGamePage({
                   canMoveDown={index < game.questions.length - 1}
                   canOpenRound={!openQuestion && question.status === "HIDDEN"}
                   canCloseRound={question.status === "OPEN"}
+                  canRevealRound={question.status === "CLOSED"}
                 />
               ))}
             </div>
