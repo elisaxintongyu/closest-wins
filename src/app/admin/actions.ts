@@ -400,13 +400,35 @@ export async function revealQuestionRound(questionId: string) {
     throw new Error("Question is not ready to reveal.");
   }
 
-  await prisma.question.update({
-    where: {
-      id: question.id,
-    },
-    data: {
-      status: "REVEALED",
-    },
+  await prisma.$transaction(async (tx) => {
+    await tx.question.update({
+      where: {
+        id: question.id,
+      },
+      data: {
+        status: "REVEALED",
+      },
+    });
+
+    const remainingRounds = await tx.question.count({
+      where: {
+        gameId: question.gameId,
+        status: {
+          in: ["HIDDEN", "OPEN", "CLOSED"],
+        },
+      },
+    });
+
+    if (remainingRounds === 0) {
+      await tx.game.update({
+        where: {
+          id: question.gameId,
+        },
+        data: {
+          status: "COMPLETED",
+        },
+      });
+    }
   });
 
   revalidatePath(`/admin/games/${question.gameId}`);

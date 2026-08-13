@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import { ActiveQuestionPanel } from "@/components/player/active-question-panel";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { RevealedAnswerPanel } from "@/components/player/revealed-answer-panel";
+import { ScoreboardPanel } from "@/components/player/scoreboard-panel";
 import { SubmitGuessForm } from "@/components/player/submit-guess-form";
 import { requireRole, syncDatabaseUser } from "@/lib/auth-guards";
-import { getQuestionWinners } from "@/lib/gameplay";
+import { getQuestionWinners, getScoreboard } from "@/lib/gameplay";
 import { prisma } from "@/lib/prisma";
 
 export default async function PlayerGamePage({
@@ -121,6 +122,37 @@ export default async function PlayerGamePage({
   const revealedWinners = revealedQuestion
     ? getQuestionWinners(revealedQuestion)
     : [];
+  const standings = getScoreboard(
+    await prisma.team.findMany({
+      where: {
+        gameId,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    }),
+    await prisma.question.findMany({
+      where: {
+        gameId,
+        status: "REVEALED",
+      },
+      select: {
+        correctAnswer: true,
+        guesses: {
+          select: {
+            value: true,
+            team: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    })
+  );
 
   return (
     <DashboardShell
@@ -202,6 +234,13 @@ export default async function PlayerGamePage({
             >
               Back to dashboard
             </Link>
+          </div>
+
+          <div className="mt-5">
+            <ScoreboardPanel
+              standings={standings}
+              currentTeamId={membership.team.id}
+            />
           </div>
         </section>
       </div>
