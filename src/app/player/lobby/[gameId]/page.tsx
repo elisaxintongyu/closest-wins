@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { ActiveQuestionPanel } from "@/components/player/active-question-panel";
 import { RevealedAnswerPanel } from "@/components/player/revealed-answer-panel";
+import { ScoreboardPanel } from "@/components/player/scoreboard-panel";
 import { requireRole, syncDatabaseUser } from "@/lib/auth-guards";
-import { getQuestionWinners } from "@/lib/gameplay";
+import { getQuestionWinners, getScoreboard } from "@/lib/gameplay";
 import { prisma } from "@/lib/prisma";
 
 export default async function PlayerLobbyPage({
@@ -107,6 +108,32 @@ export default async function PlayerLobbyPage({
   const revealedWinners = revealedQuestion
     ? getQuestionWinners(revealedQuestion)
     : [];
+  const standings = getScoreboard(
+    membership.game.teams.map((team) => ({
+      id: team.id,
+      name: team.name,
+    })),
+    await prisma.question.findMany({
+      where: {
+        gameId,
+        status: "REVEALED",
+      },
+      select: {
+        correctAnswer: true,
+        guesses: {
+          select: {
+            value: true,
+            team: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    })
+  );
 
   return (
     <DashboardShell
@@ -227,6 +254,11 @@ export default async function PlayerLobbyPage({
           })}
         </div>
       </section>
+
+      <ScoreboardPanel
+        standings={standings}
+        currentTeamId={membership.team.id}
+      />
     </DashboardShell>
   );
 }
