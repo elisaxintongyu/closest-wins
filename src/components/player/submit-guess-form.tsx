@@ -11,9 +11,14 @@ import { initialPlayerActionState } from "@/lib/player-validation";
 type SubmitGuessFormProps = {
   gameId: string;
   questionId: string;
+  existingGuess: number | null;
 };
 
-export function SubmitGuessForm({ gameId, questionId }: SubmitGuessFormProps) {
+export function SubmitGuessForm({
+  gameId,
+  questionId,
+  existingGuess,
+}: SubmitGuessFormProps) {
   const submitGuessForQuestion = submitGuess.bind(null, gameId, questionId);
   const [state, formAction] = useActionState(
     submitGuessForQuestion,
@@ -38,18 +43,27 @@ export function SubmitGuessForm({ gameId, questionId }: SubmitGuessFormProps) {
           type="number"
           step="any"
           placeholder="42"
+          disabled={existingGuess !== null}
           className="w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 text-lg"
         />
         <PlayerFieldErrors state={state} field="guess" />
       </div>
 
+      {existingGuess !== null ? (
+        <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          Your team locked in{" "}
+          <span className="font-semibold">{existingGuess}</span> for this round.
+        </p>
+      ) : null}
+
       <PlayerFormMessage state={state} />
 
       <button
         type="submit"
+        disabled={existingGuess !== null}
         className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-amber-50 transition hover:bg-stone-800"
       >
-        Submit guess
+        {existingGuess !== null ? "Guess submitted" : "Submit guess"}
       </button>
     </form>
   );
