@@ -2,9 +2,11 @@
 
 import { useActionState } from "react";
 import {
+  closeQuestionRound,
   deleteQuestion,
   moveQuestionDown,
   moveQuestionUp,
+  openQuestionRound,
   updateQuestion,
 } from "@/app/admin/actions";
 import { FieldErrors, FormMessage } from "@/components/admin/form-feedback";
@@ -22,17 +24,23 @@ type QuestionEditorProps = {
   };
   canMoveUp: boolean;
   canMoveDown: boolean;
+  canOpenRound: boolean;
+  canCloseRound: boolean;
 };
 
 export function QuestionEditor({
   question,
   canMoveUp,
   canMoveDown,
+  canOpenRound,
+  canCloseRound,
 }: QuestionEditorProps) {
   const updateQuestionById = updateQuestion.bind(null, question.id);
   const deleteQuestionById = deleteQuestion.bind(null, question.id);
   const moveQuestionUpById = moveQuestionUp.bind(null, question.id);
   const moveQuestionDownById = moveQuestionDown.bind(null, question.id);
+  const openQuestionRoundById = openQuestionRound.bind(null, question.id);
+  const closeQuestionRoundById = closeQuestionRound.bind(null, question.id);
   const [state, formAction] = useActionState(
     updateQuestionById,
     initialActionState
@@ -48,6 +56,24 @@ export function QuestionEditor({
           <p className="text-xs text-stone-600">Status: {question.status}</p>
         </div>
         <div className="flex gap-2">
+          <form action={openQuestionRoundById}>
+            <button
+              type="submit"
+              disabled={!canOpenRound}
+              className="rounded-lg border border-emerald-300 px-3 py-2 text-sm text-emerald-800 disabled:opacity-50"
+            >
+              Open round
+            </button>
+          </form>
+          <form action={closeQuestionRoundById}>
+            <button
+              type="submit"
+              disabled={!canCloseRound}
+              className="rounded-lg border border-amber-300 px-3 py-2 text-sm text-amber-800 disabled:opacity-50"
+            >
+              Close round
+            </button>
+          </form>
           <form action={moveQuestionUpById}>
             <button
               type="submit"
