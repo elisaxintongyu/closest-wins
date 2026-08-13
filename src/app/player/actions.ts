@@ -188,18 +188,29 @@ export async function submitGuess(
     return buildErrorState("That round is no longer accepting guesses.");
   }
 
-  await prisma.guess.upsert({
+  const existingGuess = await prisma.guess.findUnique({
     where: {
       questionId_teamId: {
         questionId: question.id,
         teamId: membership.teamId,
       },
     },
-    update: {
-      value: guess,
-      userId: player.id,
+    select: {
+      value: true,
     },
-    create: {
+  });
+
+  if (existingGuess) {
+    return buildErrorState(
+      `Your team already submitted ${existingGuess.value} for this round.`,
+      {
+        guess: ["Each team gets one guess per round."],
+      }
+    );
+  }
+
+  await prisma.guess.create({
+    data: {
       questionId: question.id,
       teamId: membership.teamId,
       userId: player.id,

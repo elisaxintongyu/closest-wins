@@ -66,6 +66,30 @@ export default async function PlayerGamePage({
     notFound();
   }
 
+  const activeQuestion = await prisma.question.findFirst({
+    where: {
+      gameId,
+      status: "OPEN",
+    },
+    orderBy: {
+      order: "asc",
+    },
+    select: {
+      id: true,
+      order: true,
+      prompt: true,
+      guesses: {
+        where: {
+          teamId: membership.team.id,
+        },
+        select: {
+          value: true,
+        },
+        take: 1,
+      },
+    },
+  });
+
   return (
     <DashboardShell
       eyebrow="Player game"
@@ -104,13 +128,12 @@ export default async function PlayerGamePage({
             </div>
           </section>
 
-          <ActiveQuestionPanel
-            activeQuestion={membership.game.questions[0] ?? null}
-          >
-            {membership.game.questions[0] ? (
+          <ActiveQuestionPanel activeQuestion={activeQuestion}>
+            {activeQuestion ? (
               <SubmitGuessForm
                 gameId={membership.game.id}
-                questionId={membership.game.questions[0].id}
+                questionId={activeQuestion.id}
+                existingGuess={activeQuestion.guesses[0]?.value ?? null}
               />
             ) : null}
           </ActiveQuestionPanel>
