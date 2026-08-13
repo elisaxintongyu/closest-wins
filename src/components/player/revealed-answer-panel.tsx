@@ -5,10 +5,18 @@ type RevealedAnswerPanelProps = {
     correctAnswer: number;
     explanation: string | null;
   } | null;
+  winners: {
+    team: {
+      name: string;
+    };
+    value: number;
+    distance: number;
+  }[];
 };
 
 export function RevealedAnswerPanel({
   revealedQuestion,
+  winners,
 }: RevealedAnswerPanelProps) {
   if (!revealedQuestion) {
     return null;
@@ -28,6 +36,24 @@ export function RevealedAnswerPanel({
       <p className="mt-3 text-base leading-8 text-stone-700">
         {revealedQuestion.prompt}
       </p>
+      <div className="mt-4 rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm leading-7 text-stone-700">
+        {winners.length === 0 ? (
+          "No team submitted a guess for this round."
+        ) : (
+          <>
+            <p className="font-semibold text-stone-950">
+              Winner{winners.length === 1 ? "" : "s"}:{" "}
+              {winners.map((winner) => winner.team.name).join(", ")}
+            </p>
+            <p>
+              Closest guess{winners.length === 1 ? "" : "es"}:{" "}
+              {winners
+                .map((winner) => `${winner.value} (off by ${winner.distance})`)
+                .join(", ")}
+            </p>
+          </>
+        )}
+      </div>
       {revealedQuestion.explanation ? (
         <p className="mt-4 rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm leading-7 text-stone-700">
           {revealedQuestion.explanation}
