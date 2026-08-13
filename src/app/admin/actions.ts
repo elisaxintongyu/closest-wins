@@ -131,6 +131,37 @@ async function requireOwnedQuestion(questionId: string, createdById: string) {
   return question;
 }
 
+async function requireRoundState(
+  questionId: string,
+  createdById: string,
+  expectedStatus: "HIDDEN" | "OPEN"
+) {
+  const question = await prisma.question.findFirst({
+    where: {
+      id: questionId,
+      game: {
+        createdById,
+      },
+    },
+    select: {
+      id: true,
+      gameId: true,
+      order: true,
+      status: true,
+    },
+  });
+
+  if (!question) {
+    throw new Error("Question not found.");
+  }
+
+  if (question.status !== expectedStatus) {
+    throw new Error(`Question is not ${expectedStatus.toLowerCase()}.`);
+  }
+
+  return question;
+}
+
 export async function createQuestion(
   gameId: string,
   previousState: ActionState = initialActionState,
@@ -287,4 +318,64 @@ export async function moveQuestionUp(questionId: string) {
 
 export async function moveQuestionDown(questionId: string) {
   await moveQuestion(questionId, "down");
+}
+
+export async function openQuestionRound(questionId: string) {
+  const createdById = await requireAdminDatabaseUserId();
+  const question = await requireRoundState(questionId, createdById, "HIDDEN");
+
+  const existingOpenQuestion = await prisma.question.findFirst({
+    where: {
+      gameId: question.gameId,
+      status: "OPEN",
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (existingOpenQuestion) {
+    throw new Error("Close the current open round before opening another one.");
+  }
+
+  await prisma.$transaction([
+    prisma.game.update({
+      where: {
+        id: question.gameId,
+      },
+      data: {
+        status: "IN_PROGRESS",
+      },
+    }),
+    prisma.question.update({
+      where: {
+        id: question.id,
+      },
+      data: {
+        status: "OPEN",
+      },
+    }),
+  ]);
+
+  revalidatePath(`/admin/games/${question.gameId}`);
+  revalidatePath(`/player/games/${question.gameId}`);
+  revalidatePath(`/player/lobby/${question.gameId}`);
+}
+
+export async function closeQuestionRound(questionId: string) {
+  const createdById = await requireAdminDatabaseUserId();
+  const question = await requireRoundState(questionId, createdById, "OPEN");
+
+  await prisma.question.update({
+    where: {
+      id: question.id,
+    },
+    data: {
+      status: "CLOSED",
+    },
+  });
+
+  revalidatePath(`/admin/games/${question.gameId}`);
+  revalidatePath(`/player/games/${question.gameId}`);
+  revalidatePath(`/player/lobby/${question.gameId}`);
 }

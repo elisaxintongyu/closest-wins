@@ -48,6 +48,13 @@ export default async function AdminGamePage({
     notFound();
   }
 
+  const openQuestion = game.questions.find(
+    (question) => question.status === "OPEN"
+  );
+  const hiddenQuestions = game.questions.filter(
+    (question) => question.status === "HIDDEN"
+  ).length;
+
   return (
     <DashboardShell
       eyebrow="Question management"
@@ -68,6 +75,48 @@ export default async function AdminGamePage({
         >
           Back to all games
         </Link>
+
+        <section className="grid gap-4 md:grid-cols-3">
+          <article className="rounded-2xl border border-stone-200 bg-white p-4">
+            <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
+              Round flow
+            </p>
+            <p className="mt-2 text-lg font-semibold text-stone-950">
+              {openQuestion
+                ? `Question ${openQuestion.order} is live`
+                : "No round is open"}
+            </p>
+            <p className="mt-2 text-sm leading-7 text-stone-700">
+              Only one question can be open at a time. Close the current round
+              before starting the next one.
+            </p>
+          </article>
+          <article className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+            <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
+              Waiting
+            </p>
+            <p className="mt-2 text-lg font-semibold text-stone-950">
+              {hiddenQuestions} hidden question
+              {hiddenQuestions === 1 ? "" : "s"}
+            </p>
+            <p className="mt-2 text-sm leading-7 text-stone-700">
+              Hidden questions are still in the queue and can be opened when you
+              are ready to run the next round.
+            </p>
+          </article>
+          <article className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+            <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
+              Game state
+            </p>
+            <p className="mt-2 text-lg font-semibold text-stone-950">
+              {game.status}
+            </p>
+            <p className="mt-2 text-sm leading-7 text-stone-700">
+              Opening the first round automatically moves the game into the
+              active gameplay state.
+            </p>
+          </article>
+        </section>
 
         <section className="space-y-4">
           <div className="space-y-2">
@@ -105,6 +154,8 @@ export default async function AdminGamePage({
                   question={question}
                   canMoveUp={index > 0}
                   canMoveDown={index < game.questions.length - 1}
+                  canOpenRound={!openQuestion && question.status === "HIDDEN"}
+                  canCloseRound={question.status === "OPEN"}
                 />
               ))}
             </div>
