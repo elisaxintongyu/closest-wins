@@ -8,6 +8,7 @@ import {
   initialPlayerActionState,
   type PlayerActionState,
   validateCreateTeamInput,
+  validateGuessInput,
 } from "@/lib/player-validation";
 
 function hasFieldErrors(fieldErrors: Record<string, string[]>) {
@@ -28,6 +29,32 @@ function buildErrorState(
 async function requirePlayerDatabaseUser() {
   const session = await requireRole("PLAYER");
   return syncDatabaseUser(session);
+}
+
+async function requirePlayerMembership(gameId: string, userId: string) {
+  const membership = await prisma.teamMembership.findUnique({
+    where: {
+      gameId_userId: {
+        gameId,
+        userId,
+      },
+    },
+    select: {
+      gameId: true,
+      teamId: true,
+      team: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!membership) {
+    throw new Error("You are not part of this game.");
+  }
+
+  return membership;
 }
 
 export async function createTeam(
@@ -124,4 +151,67 @@ export async function createTeam(
 
   revalidatePath("/player");
   redirect(`/player/games/${game.id}?team=${team.id}`);
+}
+
+export async function submitGuess(
+  gameId: string,
+  questionId: string,
+  previousState: PlayerActionState = initialPlayerActionState,
+  formData: FormData
+): Promise<PlayerActionState> {
+  void previousState;
+  const { guess, fieldErrors } = validateGuessInput(formData);
+
+  if (hasFieldErrors(fieldErrors)) {
+    return buildErrorState(
+      "Enter a valid numerical guess to submit.",
+      fieldErrors
+    );
+  }
+
+  const player = await requirePlayerDatabaseUser();
+  const membership = await requirePlayerMembership(gameId, player.id);
+
+  const question = await prisma.question.findFirst({
+    where: {
+      id: questionId,
+      gameId,
+      status: "OPEN",
+    },
+    select: {
+      id: true,
+      order: true,
+    },
+  });
+
+  if (!question) {
+    return buildErrorState("That round is no longer accepting guesses.");
+  }
+
+  await prisma.guess.upsert({
+    where: {
+      questionId_teamId: {
+        questionId: question.id,
+        teamId: membership.teamId,
+      },
+    },
+    update: {
+      value: guess,
+      userId: player.id,
+    },
+    create: {
+      questionId: question.id,
+      teamId: membership.teamId,
+      userId: player.id,
+      value: guess,
+    },
+  });
+
+  revalidatePath(`/player/games/${gameId}`);
+  revalidatePath(`/player/lobby/${gameId}`);
+
+  return {
+    status: "success",
+    message: `Submitted ${guess} for ${membership.team.name} in round ${question.order}.`,
+  };
 }

@@ -10,18 +10,16 @@ function createPrismaClient() {
   });
 }
 
-function hasMilestoneFourDelegates(client: PrismaClient) {
-  return "team" in client && "teamMembership" in client;
+function hasGameplayDelegates(client: PrismaClient) {
+  return "team" in client && "teamMembership" in client && "guess" in client;
 }
 
 const existingPrisma =
-  globalForPrisma.prisma &&
-  hasMilestoneFourDelegates(globalForPrisma.prisma)
+  globalForPrisma.prisma && hasGameplayDelegates(globalForPrisma.prisma)
     ? globalForPrisma.prisma
     : undefined;
 
-export const prisma =
-  existingPrisma ?? createPrismaClient();
+export const prisma = existingPrisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
