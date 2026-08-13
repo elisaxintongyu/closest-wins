@@ -7,6 +7,7 @@ import {
   moveQuestionDown,
   moveQuestionUp,
   openQuestionRound,
+  revealQuestionRound,
   updateQuestion,
 } from "@/app/admin/actions";
 import { FieldErrors, FormMessage } from "@/components/admin/form-feedback";
@@ -26,6 +27,7 @@ type QuestionEditorProps = {
   canMoveDown: boolean;
   canOpenRound: boolean;
   canCloseRound: boolean;
+  canRevealRound: boolean;
 };
 
 export function QuestionEditor({
@@ -34,6 +36,7 @@ export function QuestionEditor({
   canMoveDown,
   canOpenRound,
   canCloseRound,
+  canRevealRound,
 }: QuestionEditorProps) {
   const updateQuestionById = updateQuestion.bind(null, question.id);
   const deleteQuestionById = deleteQuestion.bind(null, question.id);
@@ -41,6 +44,7 @@ export function QuestionEditor({
   const moveQuestionDownById = moveQuestionDown.bind(null, question.id);
   const openQuestionRoundById = openQuestionRound.bind(null, question.id);
   const closeQuestionRoundById = closeQuestionRound.bind(null, question.id);
+  const revealQuestionRoundById = revealQuestionRound.bind(null, question.id);
   const [state, formAction] = useActionState(
     updateQuestionById,
     initialActionState
@@ -72,6 +76,15 @@ export function QuestionEditor({
               className="rounded-lg border border-amber-300 px-3 py-2 text-sm text-amber-800 disabled:opacity-50"
             >
               Close round
+            </button>
+          </form>
+          <form action={revealQuestionRoundById}>
+            <button
+              type="submit"
+              disabled={!canRevealRound}
+              className="rounded-lg border border-sky-300 px-3 py-2 text-sm text-sky-800 disabled:opacity-50"
+            >
+              Reveal answer
             </button>
           </form>
           <form action={moveQuestionUpById}>
