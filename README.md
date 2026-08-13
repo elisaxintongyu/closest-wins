@@ -31,11 +31,14 @@ cp .env.example .env
 Required values:
 
 ```bash
-DATABASE_URL="postgresql://...pooler..."
-DIRECT_URL="postgresql://...direct-host..."
+DATABASE_URL="postgresql://...dev-branch-pooler..."
+DIRECT_URL="postgresql://...dev-branch-direct-host..."
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
 CLERK_SECRET_KEY="sk_test_..."
 ```
+
+For this repo, local development should use the Neon `dev` branch connection strings.
+Production should keep using the Neon `production` branch connection strings in Vercel.
 
 4. Create the database schema:
 
@@ -68,6 +71,12 @@ npm install
 cp .env.example .env
 npm run dev
 ```
+
+In this mode:
+
+- `DATABASE_URL` should be the pooled connection string for the Neon `dev` branch
+- `DIRECT_URL` should be the direct connection string for the Neon `dev` branch
+- Vercel production env vars should stay pointed at the Neon `production` branch
 
 ### 2. Local Postgres container plus Clerk
 
@@ -138,6 +147,13 @@ npm run format
 - `npm run db:seed` seeds the demo users
 - `npm run db:up` starts the optional local PostgreSQL container
 - `npm run db:down` stops the optional local PostgreSQL container
+
+## Neon branch setup
+
+- Use the Neon `production` branch for Vercel production deployments
+- Use the Neon `dev` branch for local development and non-production Prisma work
+- Keep `DATABASE_URL` on the pooled Neon host
+- Keep `DIRECT_URL` on the direct Neon host for migrations and schema operations
 
 ## Role-based routes
 
