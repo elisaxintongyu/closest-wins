@@ -53,6 +53,8 @@ Database:
 - The app database is hosted on Neon.
 - Prisma should use the pooled Neon connection for `DATABASE_URL`.
 - Prisma migrations should use the direct Neon connection for `DIRECT_URL`.
+- Local development should use the Neon `dev` branch connection strings.
+- Production deployments should use the Neon `production` branch connection strings.
 
 User management and authentication:
 - Clerk is the current authentication and user-management provider.
@@ -70,6 +72,10 @@ Agents should assume local development typically requires:
 - `DIRECT_URL`
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
 - `CLERK_SECRET_KEY`
+
+For this repository:
+- local `.env` should point `DATABASE_URL` and `DIRECT_URL` at the Neon `dev` branch
+- Vercel production environment variables should stay pointed at the Neon `production` branch
 
 When documenting or updating setup instructions, distinguish between:
 - Neon-backed local development
