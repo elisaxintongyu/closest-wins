@@ -41,6 +41,7 @@ export default async function PlayerLobbyPage({
               order: "asc",
             },
             select: {
+              id: true,
               order: true,
               prompt: true,
             },

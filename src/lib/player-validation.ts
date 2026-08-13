@@ -8,6 +8,8 @@ export const initialPlayerActionState: PlayerActionState = {
   status: "idle",
 };
 
+const TEAM_NAME_MAX_LENGTH = 40;
+
 function normalizeValue(formData: FormData, key: string) {
   return formData.get(key)?.toString().trim() ?? "";
 }
@@ -25,13 +27,32 @@ export function validateCreateTeamInput(formData: FormData) {
     fieldErrors.teamName = ["Enter a team name with at least 2 characters."];
   }
 
-  if (teamName.length > 40) {
-    fieldErrors.teamName = ["Keep the team name under 40 characters."];
+  if (teamName.length > TEAM_NAME_MAX_LENGTH) {
+    fieldErrors.teamName = [
+      `Keep the team name under ${TEAM_NAME_MAX_LENGTH} characters.`,
+    ];
   }
 
   return {
     joinCode,
     teamName,
+    fieldErrors,
+  };
+}
+
+export function validateGuessInput(formData: FormData) {
+  const guessInput = normalizeValue(formData, "guess");
+  const guess = Number(guessInput);
+  const fieldErrors: Record<string, string[]> = {};
+
+  if (!guessInput) {
+    fieldErrors.guess = ["Enter your team's numerical guess."];
+  } else if (!Number.isFinite(guess)) {
+    fieldErrors.guess = ["Guess must be a valid number."];
+  }
+
+  return {
+    guess,
     fieldErrors,
   };
 }

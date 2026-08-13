@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActiveQuestionPanel } from "@/components/player/active-question-panel";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { SubmitGuessForm } from "@/components/player/submit-guess-form";
 import { requireRole, syncDatabaseUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 
@@ -45,6 +46,7 @@ export default async function PlayerGamePage({
               order: "asc",
             },
             select: {
+              id: true,
               order: true,
               prompt: true,
             },
@@ -104,7 +106,14 @@ export default async function PlayerGamePage({
 
           <ActiveQuestionPanel
             activeQuestion={membership.game.questions[0] ?? null}
-          />
+          >
+            {membership.game.questions[0] ? (
+              <SubmitGuessForm
+                gameId={membership.game.id}
+                questionId={membership.game.questions[0].id}
+              />
+            ) : null}
+          </ActiveQuestionPanel>
         </div>
 
         <section className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-6">

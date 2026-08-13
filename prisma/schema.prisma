@@ -28,34 +28,35 @@ enum QuestionStatus {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  passwordHash  String?
-  role          Role      @default(PLAYER)
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  createdGames  Game[]    @relation("GameCreator")
-  captainedTeams Team[]   @relation("TeamCaptain")
+  id              String           @id @default(cuid())
+  email           String           @unique
+  name            String?
+  passwordHash    String?
+  role            Role             @default(PLAYER)
+  emailVerified   DateTime?
+  image           String?
+  accounts        Account[]
+  sessions        Session[]
+  createdGames    Game[]           @relation("GameCreator")
+  captainedTeams  Team[]           @relation("TeamCaptain")
   teamMemberships TeamMembership[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  guesses         Guess[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model Game {
-  id          String     @id @default(cuid())
+  id          String           @id @default(cuid())
   title       String
-  joinCode    String     @unique
-  status      GameStatus @default(DRAFT)
+  joinCode    String           @unique
+  status      GameStatus       @default(DRAFT)
   createdById String
-  createdBy   User       @relation("GameCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdBy   User             @relation("GameCreator", fields: [createdById], references: [id], onDelete: Restrict)
   questions   Question[]
   teams       Team[]
   memberships TeamMembership[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   @@index([createdById])
   @@index([status])
@@ -69,6 +70,7 @@ model Team {
   game        Game             @relation(fields: [gameId], references: [id], onDelete: Cascade)
   captain     User             @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: Restrict)
   memberships TeamMembership[]
+  guesses     Guess[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
@@ -103,11 +105,30 @@ model Question {
   order         Int
   status        QuestionStatus @default(HIDDEN)
   game          Game           @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  guesses       Guess[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
   @@unique([gameId, order])
   @@index([gameId])
+}
+
+model Guess {
+  id         String   @id @default(cuid())
+  questionId String
+  teamId     String
+  userId     String
+  value      Float
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  team       Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([questionId, teamId])
+  @@index([questionId])
+  @@index([teamId])
+  @@index([userId])
 }
 
 model Account {
