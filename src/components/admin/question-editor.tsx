@@ -51,20 +51,20 @@ export function QuestionEditor({
   );
 
   return (
-    <article className="space-y-4 rounded-2xl border p-4">
+    <article className="space-y-4 rounded-2xl border p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="text-sm font-semibold text-stone-900">
             Question {question.order}
           </p>
           <p className="text-xs text-stone-600">Status: {question.status}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="grid w-full gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-end">
           <form action={openQuestionRoundById}>
             <button
               type="submit"
               disabled={!canOpenRound}
-              className="rounded-lg border border-emerald-300 px-3 py-2 text-sm text-emerald-800 disabled:opacity-50"
+              className="min-h-11 w-full rounded-lg border border-emerald-300 px-3 py-2 text-sm text-emerald-800 disabled:opacity-50 sm:w-auto"
             >
               Open round
             </button>
@@ -73,7 +73,7 @@ export function QuestionEditor({
             <button
               type="submit"
               disabled={!canCloseRound}
-              className="rounded-lg border border-amber-300 px-3 py-2 text-sm text-amber-800 disabled:opacity-50"
+              className="min-h-11 w-full rounded-lg border border-amber-300 px-3 py-2 text-sm text-amber-800 disabled:opacity-50 sm:w-auto"
             >
               Close round
             </button>
@@ -82,7 +82,7 @@ export function QuestionEditor({
             <button
               type="submit"
               disabled={!canRevealRound}
-              className="rounded-lg border border-sky-300 px-3 py-2 text-sm text-sky-800 disabled:opacity-50"
+              className="min-h-11 w-full rounded-lg border border-sky-300 px-3 py-2 text-sm text-sky-800 disabled:opacity-50 sm:w-auto"
             >
               Reveal answer
             </button>
@@ -91,7 +91,7 @@ export function QuestionEditor({
             <button
               type="submit"
               disabled={!canMoveUp}
-              className="rounded-lg border px-3 py-2 text-sm disabled:opacity-50"
+              className="min-h-11 w-full rounded-lg border px-3 py-2 text-sm disabled:opacity-50 sm:w-auto"
             >
               Move up
             </button>
@@ -100,7 +100,7 @@ export function QuestionEditor({
             <button
               type="submit"
               disabled={!canMoveDown}
-              className="rounded-lg border px-3 py-2 text-sm disabled:opacity-50"
+              className="min-h-11 w-full rounded-lg border px-3 py-2 text-sm disabled:opacity-50 sm:w-auto"
             >
               Move down
             </button>
@@ -163,10 +163,10 @@ export function QuestionEditor({
 
         <FormMessage state={state} />
 
-        <div className="flex flex-wrap gap-3">
+        <div className="grid gap-3 sm:flex sm:flex-wrap">
           <SubmitButton
             pendingLabel="Saving..."
-            className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+            className="min-h-11 w-full rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60 sm:w-auto"
             style={{ color: "#fff" }}
           >
             Save changes
@@ -175,7 +175,7 @@ export function QuestionEditor({
           <button
             type="submit"
             formAction={deleteQuestionById}
-            className="rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700"
+            className="min-h-11 w-full rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 sm:w-auto"
           >
             Delete question
           </button>

@@ -17,17 +17,17 @@ export type AdminGameSummary = {
 
 function GameSummaryCard({ game }: { game: AdminGameSummary }) {
   return (
-    <article className="rounded-[1.5rem] border border-stone-900/10 bg-white p-4">
+    <article className="min-w-0 rounded-[1.5rem] border border-stone-900/10 bg-white p-4">
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="text-xs font-semibold tracking-[0.16em] text-stone-500 uppercase">
             {game.status}
           </p>
-          <h3 className="mt-2 text-lg font-semibold text-stone-950">
+          <h3 className="mt-2 text-lg font-semibold break-words text-stone-950">
             {game.title}
           </h3>
         </div>
-        <span className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-stone-700 uppercase">
+        <span className="max-w-full rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] break-all text-stone-700 uppercase">
           {game.joinCode}
         </span>
       </div>
@@ -66,7 +66,7 @@ function GameSummaryCard({ game }: { game: AdminGameSummary }) {
 
       <Link
         href={`/admin/games/${game.id}`}
-        className="mt-4 inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
+        className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-stone-900/10 bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
         style={{ color: "#fff" }}
       >
         Open game
@@ -86,7 +86,9 @@ export function AdminGameSummarySidebar({
     <div className="space-y-6">
       <section className="space-y-3">
         <div>
-          <h2 className="text-lg font-semibold text-stone-950">Current games</h2>
+          <h2 className="text-lg font-semibold text-stone-950">
+            Current games
+          </h2>
           <p className="text-sm text-stone-600">
             Games still in setup or active play.
           </p>

@@ -23,17 +23,17 @@ export function CreateTeamForm({
   return (
     <form
       action={formAction}
-      className="space-y-5 rounded-[1.75rem] border border-stone-900/10 bg-white p-5 shadow-[0_18px_60px_rgba(120,53,15,0.08)]"
+      className="space-y-5 rounded-[1.75rem] border border-stone-900/10 bg-white p-5 shadow-[0_18px_60px_rgba(120,53,15,0.08)] sm:p-6"
     >
       {joinCode ? (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
           <p className="text-xs font-semibold tracking-[0.16em] text-amber-700 uppercase">
             Joining
           </p>
-          <p className="mt-2 text-lg font-semibold text-stone-950">
+          <p className="mt-2 text-lg font-semibold break-words text-stone-950">
             {gameTitle ?? "Selected game"}
           </p>
-          <p className="mt-1 font-mono text-sm tracking-[0.2em] text-stone-700">
+          <p className="mt-1 font-mono text-sm tracking-[0.2em] break-all text-stone-700">
             {joinCode}
           </p>
           <input type="hidden" name="joinCode" value={joinCode} />
@@ -52,7 +52,7 @@ export function CreateTeamForm({
             type="text"
             maxLength={6}
             placeholder="AB12CD"
-            className="w-full rounded-2xl border border-stone-300 px-4 py-3 font-mono text-lg tracking-[0.3em] uppercase"
+            className="w-full rounded-2xl border border-stone-300 px-4 py-3 font-mono text-base tracking-[0.2em] uppercase sm:text-lg sm:tracking-[0.3em]"
           />
           <PlayerFieldErrors state={state} field="joinCode" />
         </div>
@@ -80,7 +80,7 @@ export function CreateTeamForm({
 
       <button
         type="submit"
-        className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800"
+        className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 sm:w-auto"
         style={{ color: "#fff" }}
       >
         Create team

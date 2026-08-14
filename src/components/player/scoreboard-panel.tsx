@@ -13,7 +13,7 @@ export function ScoreboardPanel({
   currentTeamId,
 }: ScoreboardPanelProps) {
   return (
-    <section className="rounded-[1.75rem] border border-stone-200 bg-white p-6">
+    <section className="min-w-0 rounded-[1.75rem] border border-stone-200 bg-white p-5 sm:p-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
@@ -35,18 +35,18 @@ export function ScoreboardPanel({
           return (
             <article
               key={team.id}
-              className={`flex items-center justify-between gap-4 rounded-[1.5rem] border px-4 py-4 ${
+              className={`flex flex-col items-start justify-between gap-4 rounded-[1.5rem] border px-4 py-4 sm:flex-row sm:items-center ${
                 isCurrentTeam
                   ? "border-amber-300 bg-amber-50"
                   : "border-stone-200 bg-stone-50"
               }`}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex min-w-0 items-center gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-white text-sm font-semibold text-stone-950">
                   {index + 1}
                 </div>
-                <div>
-                  <p className="text-base font-semibold text-stone-950">
+                <div className="min-w-0">
+                  <p className="text-base font-semibold break-words text-stone-950">
                     {team.name}
                   </p>
                   <p className="text-sm text-stone-600">
@@ -54,7 +54,7 @@ export function ScoreboardPanel({
                   </p>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="w-full text-left sm:w-auto sm:text-right">
                 <p className="text-2xl font-semibold tracking-[-0.03em] text-stone-950">
                   {team.score}
                 </p>

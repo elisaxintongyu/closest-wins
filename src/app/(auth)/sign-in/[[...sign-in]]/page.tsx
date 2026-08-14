@@ -7,13 +7,13 @@ export default function SignInPage() {
   const isE2ETestMode = isE2ETestModeEnabled();
 
   return (
-    <section className="grid w-full gap-8 rounded-[2rem] border border-stone-900/10 bg-white/80 p-8 shadow-[0_28px_90px_rgba(120,53,15,0.14)] backdrop-blur lg:grid-cols-[1.05fr_0.95fr] lg:p-10">
-      <div className="space-y-6">
+    <section className="grid w-full gap-6 rounded-[2rem] border border-stone-900/10 bg-white/80 p-5 shadow-[0_28px_90px_rgba(120,53,15,0.14)] backdrop-blur lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:p-10">
+      <div className="min-w-0 space-y-6">
         <p className="text-sm font-semibold tracking-[0.24em] text-stone-500 uppercase">
           Welcome back
         </p>
         <div className="space-y-4">
-          <h1 className="text-4xl font-semibold tracking-[-0.04em] text-stone-950">
+          <h1 className="text-3xl font-semibold tracking-[-0.04em] text-stone-950 sm:text-4xl">
             Sign in to your Closest Wins workspace.
           </h1>
           <p className="max-w-xl text-base leading-7 text-stone-700">
@@ -38,7 +38,7 @@ export default function SignInPage() {
           </Link>
         </div>
       </div>
-      <div className="rounded-[1.75rem] border border-stone-900/10 bg-stone-50/80 p-6">
+      <div className="min-w-0 overflow-hidden rounded-[1.75rem] border border-stone-900/10 bg-stone-50/80 p-4 sm:p-6">
         {isE2ETestMode ? (
           <TestAuthPanel mode="sign-in" />
         ) : (

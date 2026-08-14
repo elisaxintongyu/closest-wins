@@ -151,12 +151,12 @@ export default async function PlayerPage({
                 {memberships.map((membership) => (
                   <article
                     key={membership.team.id}
-                    className="rounded-[1.75rem] border border-stone-200 bg-white p-5"
+                    className="min-w-0 rounded-[1.75rem] border border-stone-200 bg-white p-5"
                   >
                     <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
                       {membership.team.game.status}
                     </p>
-                    <h4 className="mt-2 text-xl font-semibold text-stone-950">
+                    <h4 className="mt-2 text-xl font-semibold break-words text-stone-950">
                       {membership.team.name}
                     </h4>
                     <p className="mt-1 text-sm text-stone-700">
@@ -164,13 +164,13 @@ export default async function PlayerPage({
                     </p>
                     <p className="text-sm text-stone-700">
                       Join code:{" "}
-                      <span className="font-mono">
+                      <span className="font-mono break-all">
                         {membership.team.game.joinCode}
                       </span>
                     </p>
                     <Link
                       href={`/player/games/${membership.gameId}`}
-                      className="mt-4 inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
+                      className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-stone-900/10 bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800 sm:w-auto"
                       style={{ color: "#fff" }}
                     >
                       Open player game page

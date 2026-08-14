@@ -152,11 +152,11 @@ export default async function PlayerLobbyPage({
     >
       <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-5">
-          <section className="rounded-[1.75rem] border border-stone-200 bg-white p-6">
+          <section className="min-w-0 rounded-[1.75rem] border border-stone-200 bg-white p-5 sm:p-6">
             <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
               Waiting room
             </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-stone-950">
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] break-words text-stone-950">
               {membership.team.name}
             </h2>
             <p className="mt-3 max-w-2xl text-base leading-8 text-stone-700">
@@ -166,7 +166,9 @@ export default async function PlayerLobbyPage({
             <div className="mt-6 flex flex-wrap gap-3">
               <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-700">
                 Code:{" "}
-                <span className="font-mono">{membership.game.joinCode}</span>
+                <span className="font-mono break-all">
+                  {membership.game.joinCode}
+                </span>
               </div>
               <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-700">
                 Teams joined: {membership.game._count.teams}
@@ -184,7 +186,7 @@ export default async function PlayerLobbyPage({
           />
         </div>
 
-        <section className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-6">
+        <section className="min-w-0 rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5 sm:p-6">
           <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
             Next steps
           </p>
@@ -199,14 +201,14 @@ export default async function PlayerLobbyPage({
           </ul>
           <Link
             href="/player"
-            className="mt-5 inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white px-4 py-2 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
+            className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-stone-900/10 bg-white px-4 py-2 text-sm font-semibold text-stone-900 transition hover:bg-stone-100 sm:w-auto"
           >
             Back to player page
           </Link>
         </section>
       </div>
 
-      <section className="rounded-[1.75rem] border border-stone-200 bg-white p-6">
+      <section className="min-w-0 rounded-[1.75rem] border border-stone-200 bg-white p-5 sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
@@ -229,15 +231,15 @@ export default async function PlayerLobbyPage({
             return (
               <article
                 key={team.id}
-                className={`rounded-[1.5rem] border p-5 ${
+                className={`min-w-0 rounded-[1.5rem] border p-5 ${
                   isCurrentTeam
                     ? "border-amber-300 bg-amber-50"
                     : "border-stone-200 bg-stone-50"
                 }`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-lg font-semibold text-stone-950">
+                  <div className="min-w-0">
+                    <p className="text-lg font-semibold break-words text-stone-950">
                       {team.name}
                     </p>
                     <p className="text-sm text-stone-600">

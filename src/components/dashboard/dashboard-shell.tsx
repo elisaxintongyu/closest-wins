@@ -33,33 +33,33 @@ export function DashboardShell({
   const showTestSignOut = isE2ETestModeEnabled();
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,_#fff8eb_0%,_#fff1d6_100%)] px-6 py-12 text-stone-950">
-      <div className="mx-auto flex min-h-[calc(100vh-6rem)] w-full max-w-6xl flex-col gap-10">
-        <header className="flex flex-col gap-4 rounded-full border border-stone-900/10 bg-white/60 px-5 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-          <div>
+    <main className="min-h-screen bg-[linear-gradient(180deg,_#fff8eb_0%,_#fff1d6_100%)] px-4 py-6 text-stone-950 sm:px-6 sm:py-12">
+      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-6xl flex-col gap-6 sm:min-h-[calc(100vh-6rem)] sm:gap-10">
+        <header className="flex flex-col gap-4 rounded-[1.75rem] border border-stone-900/10 bg-white/60 px-4 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:rounded-full sm:px-5">
+          <div className="min-w-0">
             <p className="text-xs font-semibold tracking-[0.28em] text-stone-500 uppercase">
               {eyebrow}
             </p>
-            <p className="mt-1 text-sm text-stone-700">
+            <p className="mt-1 text-sm break-words text-stone-700">
               Signed in as {userName} ({roleLabel}).
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
             {homeHref && homeLabel ? (
               <Link
                 href={homeHref}
-                className="inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white px-4 py-2 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-stone-900/10 bg-white px-4 py-2 text-sm font-semibold text-stone-900 transition hover:bg-stone-100 sm:w-auto"
               >
                 {homeLabel}
               </Link>
             ) : null}
-            <div className="inline-flex items-center rounded-full border border-stone-900/10 bg-white px-3 py-2">
+            <div className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-stone-900/10 bg-white px-3 py-2 sm:w-auto">
               {showTestSignOut ? (
                 <form action="/api/test/session" method="post">
                   <input type="hidden" name="intent" value="sign-out" />
                   <button
                     type="submit"
-                    className="rounded-full border border-stone-200 bg-white px-3 py-1 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
+                    className="min-h-9 rounded-full border border-stone-200 bg-white px-3 py-1 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
                   >
                     Sign out
                   </button>
@@ -71,10 +71,10 @@ export function DashboardShell({
           </div>
         </header>
 
-        <section className="grid flex-1 gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="space-y-6 rounded-[2rem] border border-stone-900/10 bg-white/80 p-8 shadow-[0_24px_80px_rgba(120,53,15,0.12)] backdrop-blur">
+        <section className="grid flex-1 gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-8">
+          <div className="min-w-0 space-y-6 rounded-[2rem] border border-stone-900/10 bg-white/80 p-5 shadow-[0_24px_80px_rgba(120,53,15,0.12)] backdrop-blur sm:p-8">
             <div className="space-y-4">
-              <h1 className="text-4xl font-semibold tracking-[-0.04em] text-stone-950 sm:text-5xl">
+              <h1 className="text-3xl font-semibold tracking-[-0.04em] break-words text-stone-950 sm:text-5xl">
                 {title}
               </h1>
               <p className="max-w-2xl text-base leading-8 text-stone-700">
@@ -84,7 +84,7 @@ export function DashboardShell({
             {children}
           </div>
 
-          <aside className="rounded-[2rem] border border-stone-900/10 bg-stone-50/90 p-8 shadow-[0_24px_80px_rgba(120,53,15,0.08)]">
+          <aside className="min-w-0 rounded-[2rem] border border-stone-900/10 bg-stone-50/90 p-5 shadow-[0_24px_80px_rgba(120,53,15,0.08)] sm:p-8">
             <p className="text-sm font-semibold tracking-[0.24em] text-stone-500 uppercase">
               {sidebarTitle}
             </p>
