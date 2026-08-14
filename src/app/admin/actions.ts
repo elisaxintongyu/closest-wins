@@ -512,3 +512,58 @@ export async function revealQuestionRound(questionId: string) {
   revalidatePath(`/player/games/${question.gameId}`);
   revalidatePath(`/player/lobby/${question.gameId}`);
 }
+
+export async function endGameSession(gameId: string) {
+  const createdById = await requireAdminDatabaseUserId();
+  const game = await findOwnedGame(gameId, createdById);
+
+  await prisma.game.update({
+    where: {
+      id: game.id,
+    },
+    data: {
+      status: "COMPLETED",
+    },
+  });
+
+  revalidatePath("/admin");
+  revalidatePath(`/admin/games/${game.id}`);
+  revalidatePath(`/player/games/${game.id}`);
+  revalidatePath(`/player/lobby/${game.id}`);
+}
+
+export async function resetGameSession(gameId: string) {
+  const createdById = await requireAdminDatabaseUserId();
+  const game = await findOwnedGame(gameId, createdById);
+
+  await prisma.$transaction([
+    prisma.guess.deleteMany({
+      where: {
+        question: {
+          gameId: game.id,
+        },
+      },
+    }),
+    prisma.question.updateMany({
+      where: {
+        gameId: game.id,
+      },
+      data: {
+        status: "HIDDEN",
+      },
+    }),
+    prisma.game.update({
+      where: {
+        id: game.id,
+      },
+      data: {
+        status: "DRAFT",
+      },
+    }),
+  ]);
+
+  revalidatePath("/admin");
+  revalidatePath(`/admin/games/${game.id}`);
+  revalidatePath(`/player/games/${game.id}`);
+  revalidatePath(`/player/lobby/${game.id}`);
+}
