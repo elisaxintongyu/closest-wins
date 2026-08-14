@@ -1,6 +1,6 @@
 # Closest Wins
 
-`closest-wins` is a Next.js App Router project for the Closest Wins game. The repository now includes Milestone 1 setup work and Milestone 2 foundations for Neon-backed persistence, Clerk authentication, seeded users, and protected role-based routing.
+`closest-wins` is a multiplayer trivia-style web app where every round asks for a numerical guess and the closest team wins the point. The current app includes admin hosting tools, player join and lobby flows, revealed-answer scoring, completed-game history, end-to-end tests, and documentation for Neon, Clerk, Docker, and Vercel-backed local development.
 
 ## Stack
 
@@ -11,6 +11,51 @@
 - Prisma ORM with PostgreSQL
 - Clerk authentication
 - ESLint 9 and Prettier 3
+
+## What the app does today
+
+### Authentication and access
+
+- `/sign-in` is the primary entry route for existing users
+- `/sign-up` creates new player accounts through Clerk
+- `/dashboard` redirects signed-in users by role
+- `/admin` is admin-only
+- `/player` is player-only
+
+### Admin host flow
+
+Admins can:
+
+- create a game and generate a six-character join code
+- add questions one at a time or upload them from a spreadsheet
+- edit, reorder, delete, open, close, and reveal rounds
+- monitor current games and review completed game history with standings
+
+### Player flow
+
+Players can:
+
+- enter a join code to confirm the correct game
+- create a team or reopen a game they already joined
+- use the player game page for guessing and standings
+- use the lobby page for team presence, shared waiting, and revealed answers
+
+## Round lifecycle and scoring
+
+Every question moves through the same host-controlled lifecycle:
+
+1. `HIDDEN`: the question exists in the set but is not live yet.
+2. `OPEN`: teams can submit one numerical guess.
+3. `CLOSED`: the host has stopped accepting guesses.
+4. `REVEALED`: the app shows the prompt, correct answer, explanation, winners, and updated standings.
+
+Scoring behavior:
+
+- each team gets one guess per round
+- the team with the smallest absolute distance from the correct answer wins
+- ties are allowed, so multiple teams can win the same round
+- each winning team receives one point
+- once every round in a game is revealed, the game is marked `COMPLETED`
 
 ## Local development
 
@@ -137,23 +182,13 @@ This also serves the app at [http://localhost:3000](http://localhost:3000).
 The Prisma seed script creates these local accounts:
 
 - Admin: `admin@closestwins.com` / `Admin123!`
-- User: `user@closestwins.com` / `Player123!`
+- Player: `user@closestwins.com` / `Player123!`
 
-## Protected routes
+These accounts are useful for quick local verification after seeding. In Playwright test mode, the suite also provisions isolated session-based test users automatically.
 
-- `/admin` requires an authenticated admin user
-- `/player` requires an authenticated player user
-- `/dashboard` redirects authenticated users to the correct destination
+## Local verification checklist
 
-## Deployed site
-
-The latest production deployment I found on Sunday, August 9, 2026 is:
-
-- [https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app](https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app)
-
-This is the current production deployment URL, not a custom domain.
-
-## Quality checks
+After changing app behavior, the standard local verification path is:
 
 ```bash
 npm run env:check
@@ -162,11 +197,28 @@ npm run typecheck
 npm run format:check
 ```
 
-To apply formatting changes:
+When E2E-related files or gameplay flows change, also run:
 
 ```bash
-npm run format
+npx playwright install chromium
+npm run test:e2e
 ```
+
+The current E2E suite covers:
+
+- auth and role-based routing
+- admin question CRUD and bulk upload
+- full gameplay flow through reveal and completion
+- authorization boundaries
+- user-facing empty, error, and route-state behavior
+
+## Deployed site
+
+As of Friday, August 14, 2026, the latest documented production deployment is:
+
+- [https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app](https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app)
+
+This is the current production deployment URL, not a custom domain.
 
 ## E2E testing
 
@@ -232,6 +284,14 @@ These checks verify that required variables are present, avoid example placehold
 - Use the Neon `dev` branch for local development and non-production Prisma work
 - Keep `DATABASE_URL` on the pooled Neon host
 - Keep `DIRECT_URL` on the direct Neon host for migrations and schema operations
+
+## Operational notes
+
+- Use the Neon `dev` branch for local development.
+- Keep Vercel production environment variables pointed at the Neon `production` branch.
+- `DATABASE_URL` should use the pooled Neon host.
+- `DIRECT_URL` should use the direct Neon host for Prisma migrations and schema operations.
+- Run `npm run env:check` before debugging Clerk auth, Prisma connections, or route protection issues.
 
 ## Role-based routes
 
