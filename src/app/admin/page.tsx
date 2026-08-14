@@ -6,7 +6,7 @@ import {
 import { CreateGameForm } from "@/components/admin/create-game-form";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { requireRole } from "@/lib/auth-guards";
-import { getScoreboard } from "@/lib/gameplay";
+import { getQuestionWinners, getScoreboard } from "@/lib/gameplay";
 import { prisma } from "@/lib/prisma";
 
 export default async function AdminPage() {
@@ -34,8 +34,14 @@ export default async function AdminPage() {
             where: {
               status: "REVEALED",
             },
+            orderBy: {
+              order: "asc",
+            },
             select: {
+              order: true,
+              prompt: true,
               correctAnswer: true,
+              explanation: true,
               guesses: {
                 select: {
                   value: true,
@@ -58,15 +64,31 @@ export default async function AdminPage() {
         },
       })
     : [];
-  const summarizedGames: AdminGameSummary[] = games.map((game) => ({
-    id: game.id,
-    title: game.title,
-    joinCode: game.joinCode,
-    status: game.status,
-    questionCount: game._count.questions,
-    teamCount: game._count.teams,
-    standings: getScoreboard(game.teams, game.questions),
-  }));
+  const summarizedGames: AdminGameSummary[] = games.map((game) => {
+    const standings = getScoreboard(game.teams, game.questions);
+    const latestReveal = game.questions.at(-1);
+
+    return {
+      id: game.id,
+      title: game.title,
+      joinCode: game.joinCode,
+      status: game.status,
+      questionCount: game._count.questions,
+      teamCount: game._count.teams,
+      standings,
+      latestReveal: latestReveal
+        ? {
+            order: latestReveal.order,
+            prompt: latestReveal.prompt,
+            correctAnswer: latestReveal.correctAnswer,
+            explanation: latestReveal.explanation,
+            winnerNames: getQuestionWinners(latestReveal).map(
+              (winner) => winner.team.name
+            ),
+          }
+        : null,
+    };
+  });
   const currentGames = summarizedGames.filter(
     (game) => game.status !== "COMPLETED"
   );

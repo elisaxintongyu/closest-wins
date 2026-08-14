@@ -183,6 +183,7 @@ export default async function PlayerLobbyPage({
           <RevealedAnswerPanel
             revealedQuestion={revealedQuestion}
             winners={revealedWinners}
+            standingsPreview={standings}
           />
         </div>
 
