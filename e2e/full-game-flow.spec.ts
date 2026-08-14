@@ -101,10 +101,14 @@ test("single-round gameplay flows from join to reveal and completion", async ({
     playerGamePage.getByText("Submitted 58 for Alpha Team in round 1.")
   ).toBeVisible();
 
-  await getQuestionCard(adminPage, 1)
-    .getByRole("button", { name: "Close round" })
-    .click();
-  await getQuestionCard(adminPage, 1)
+  await adminPage.reload();
+  const adminQuestionCard = getQuestionCard(adminPage, 1);
+  await expect(adminQuestionCard.getByText("1 of 1 team submitted")).toBeVisible();
+  await expect(adminQuestionCard.getByText("1. Alpha Team")).toBeVisible();
+  await expect(adminQuestionCard.getByText("58")).toBeVisible();
+
+  await adminQuestionCard.getByRole("button", { name: "Close round" }).click();
+  await adminQuestionCard
     .getByRole("button", { name: "Reveal answer" })
     .click();
 

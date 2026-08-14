@@ -22,7 +22,17 @@ type QuestionEditorProps = {
     explanation: string | null;
     order: number;
     status: string;
+    guesses: {
+      id: string;
+      value: number;
+      createdAt: Date;
+      team: {
+        id: string;
+        name: string;
+      };
+    }[];
   };
+  totalTeamCount: number;
   canMoveUp: boolean;
   canMoveDown: boolean;
   canOpenRound: boolean;
@@ -32,6 +42,7 @@ type QuestionEditorProps = {
 
 export function QuestionEditor({
   question,
+  totalTeamCount,
   canMoveUp,
   canMoveDown,
   canOpenRound,
@@ -49,6 +60,8 @@ export function QuestionEditor({
     updateQuestionById,
     initialActionState
   );
+  const submittedCount = question.guesses.length;
+  const pendingCount = Math.max(totalTeamCount - submittedCount, 0);
 
   return (
     <article className="space-y-4 rounded-2xl border p-4 sm:p-5">
@@ -107,6 +120,54 @@ export function QuestionEditor({
           </form>
         </div>
       </div>
+
+      <section className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="text-sm font-semibold text-stone-950">Submissions</p>
+            <p className="text-xs text-stone-600">
+              {submittedCount} of {totalTeamCount} team
+              {totalTeamCount === 1 ? "" : "s"} submitted
+            </p>
+          </div>
+          {question.status === "OPEN" ? (
+            <span className="rounded-full border border-emerald-300 bg-white px-3 py-1 text-xs font-semibold tracking-[0.14em] text-emerald-700 uppercase">
+              {pendingCount === 0
+                ? "All teams submitted"
+                : `${pendingCount} waiting`}
+            </span>
+          ) : null}
+        </div>
+
+        {submittedCount === 0 ? (
+          <p className="mt-3 text-sm leading-7 text-stone-600">
+            {question.status === "HIDDEN"
+              ? "No submissions yet. Teams can start guessing once you open this round."
+              : "No teams have submitted a guess for this round yet."}
+          </p>
+        ) : (
+          <div className="mt-3 space-y-2">
+            {question.guesses.map((guess, index) => (
+              <div
+                key={guess.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-stone-200 bg-white px-3 py-3"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold break-words text-stone-950">
+                    {index + 1}. {guess.team.name}
+                  </p>
+                  <p className="text-xs text-stone-600">
+                    Guess received by the host view.
+                  </p>
+                </div>
+                <p className="text-lg font-semibold text-stone-950">
+                  {guess.value}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       <form action={formAction} className="space-y-4">
         <div className="space-y-2">

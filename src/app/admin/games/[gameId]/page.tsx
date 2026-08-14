@@ -29,6 +29,11 @@ export default async function AdminGamePage({
       title: true,
       joinCode: true,
       status: true,
+      _count: {
+        select: {
+          teams: true,
+        },
+      },
       questions: {
         orderBy: {
           order: "asc",
@@ -40,6 +45,22 @@ export default async function AdminGamePage({
           explanation: true,
           order: true,
           status: true,
+          guesses: {
+            orderBy: {
+              createdAt: "asc",
+            },
+            select: {
+              id: true,
+              value: true,
+              createdAt: true,
+              team: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -180,6 +201,7 @@ export default async function AdminGamePage({
                 <QuestionEditor
                   key={question.id}
                   question={question}
+                  totalTeamCount={game._count.teams}
                   canMoveUp={index > 0}
                   canMoveDown={index < game.questions.length - 1}
                   canOpenRound={!openQuestion && question.status === "HIDDEN"}
