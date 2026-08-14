@@ -90,7 +90,7 @@ export default async function AdminPage() {
       }
       highlights={[]}
     >
-      <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-8">
         <section className="space-y-4">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold text-stone-950">
@@ -127,18 +127,18 @@ export default async function AdminPage() {
                 return (
                   <article
                     key={game.id}
-                    className="rounded-[1.75rem] border border-stone-200 bg-white p-5"
+                    className="min-w-0 rounded-[1.75rem] border border-stone-200 bg-white p-5"
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
                           {game.status}
                         </p>
-                        <h3 className="mt-2 text-xl font-semibold text-stone-950">
+                        <h3 className="mt-2 text-xl font-semibold break-words text-stone-950">
                           {game.title}
                         </h3>
                       </div>
-                      <span className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-stone-700 uppercase">
+                      <span className="max-w-full rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] break-all text-stone-700 uppercase">
                         {game.joinCode}
                       </span>
                     </div>
@@ -177,7 +177,7 @@ export default async function AdminPage() {
 
                     <Link
                       href={`/admin/games/${game.id}`}
-                      className="mt-4 inline-flex items-center justify-center rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
+                      className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800 sm:w-auto"
                       style={{ color: "#fff" }}
                     >
                       Manage questions

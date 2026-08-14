@@ -16,7 +16,7 @@ export function BulkQuestionUploadForm({ gameId }: { gameId: string }) {
   return (
     <form
       action={formAction}
-      className="space-y-4 rounded-2xl border border-stone-200 bg-stone-50 p-4"
+      className="space-y-4 rounded-2xl border border-stone-200 bg-stone-50 p-4 sm:p-5"
     >
       <div className="space-y-2">
         <label
@@ -46,7 +46,7 @@ export function BulkQuestionUploadForm({ gameId }: { gameId: string }) {
 
       <SubmitButton
         pendingLabel="Uploading questions..."
-        className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+        className="min-h-11 w-full rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60 sm:w-auto"
         style={{ color: "#fff" }}
       >
         Upload spreadsheet

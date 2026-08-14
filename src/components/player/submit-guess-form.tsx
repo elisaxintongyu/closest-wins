@@ -28,7 +28,7 @@ export function SubmitGuessForm({
   return (
     <form
       action={formAction}
-      className="space-y-4 rounded-[1.75rem] border border-stone-900/10 bg-stone-50 p-5"
+      className="space-y-4 rounded-[1.75rem] border border-stone-900/10 bg-stone-50 p-5 sm:p-6"
     >
       <div className="space-y-2">
         <label
@@ -61,7 +61,7 @@ export function SubmitGuessForm({
       <button
         type="submit"
         disabled={existingGuess !== null}
-        className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800"
+        className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800"
         style={{ color: "#fff" }}
       >
         {existingGuess !== null ? "Guess submitted" : "Submit guess"}

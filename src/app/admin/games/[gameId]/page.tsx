@@ -74,7 +74,7 @@ export default async function AdminGamePage({
       <div className="space-y-8">
         <Link
           href="/admin"
-          className="inline-flex items-center justify-center rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium text-stone-900"
+          className="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium text-stone-900 sm:w-auto"
         >
           Back to all games
         </Link>
@@ -133,7 +133,7 @@ export default async function AdminGamePage({
             </p>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-4 xl:grid-cols-2">
             <div className="space-y-3">
               <div className="space-y-1">
                 <h3 className="text-lg font-semibold text-stone-950">
