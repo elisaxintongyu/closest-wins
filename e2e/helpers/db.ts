@@ -106,3 +106,32 @@ export async function addQuestionsToGame(
     })),
   });
 }
+
+export async function createTeamForPlayer(input: {
+  gameId: string;
+  userEmail: string;
+  teamName: string;
+}) {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { email: input.userEmail.toLowerCase() },
+    select: { id: true },
+  });
+
+  return prisma.team.create({
+    data: {
+      gameId: input.gameId,
+      captainId: user.id,
+      name: input.teamName,
+      memberships: {
+        create: {
+          gameId: input.gameId,
+          userId: user.id,
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+}
