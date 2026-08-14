@@ -39,6 +39,7 @@ Before submitting or merging:
 - Run `npm run lint`
 - Run `npm run typecheck`
 - Run `npm run format:check` when formatting-sensitive files changed
+- Run `npm run test:e2e` after installing Playwright's Chromium browser when E2E-related files change
 - Update `README.md` and `AGENTS.md` when workflow, infrastructure, or setup expectations change
 
 ## Current Stack
