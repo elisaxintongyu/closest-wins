@@ -95,6 +95,7 @@ In this mode:
 - Prisma migrations run automatically when the `web` container starts
 - `DATABASE_URL` and `DIRECT_URL` are provided by [`docker-compose.yml`](/Users/elisayu/Desktop/closest-wins/docker-compose.yml)
 - You still need valid Clerk keys in `.env`
+- Set `APP_PORT` in `.env` if port `3000` is already in use on the host, for example `APP_PORT="3001"`
 
 Useful commands:
 
