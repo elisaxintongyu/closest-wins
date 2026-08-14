@@ -27,7 +27,7 @@ export default function SignInPage() {
           </p>
           <Link
             href="/sign-up"
-            className="mt-4 inline-flex rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-amber-50 transition hover:bg-stone-800"
+            className="mt-4 inline-flex rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
           >
             Create a player account
           </Link>

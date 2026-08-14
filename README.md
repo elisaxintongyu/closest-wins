@@ -78,7 +78,34 @@ In this mode:
 - `DIRECT_URL` should be the direct connection string for the Neon `dev` branch
 - Vercel production env vars should stay pointed at the Neon `production` branch
 
-### 2. Local Postgres container plus Clerk
+### 2. Full Docker Compose stack
+
+Use this when you want the app and database both running in containers:
+
+```bash
+npm install
+cp .env.example .env
+docker compose up --build
+```
+
+In this mode:
+
+- `postgres` runs as a local Postgres 16 container
+- `web` builds the Next.js app image and serves it on [http://localhost:3000](http://localhost:3000)
+- Prisma migrations run automatically when the `web` container starts
+- `DATABASE_URL` and `DIRECT_URL` are provided by [`docker-compose.yml`](/Users/elisayu/Desktop/closest-wins/docker-compose.yml)
+- You still need valid Clerk keys in `.env`
+- Set `APP_PORT` in `.env` if port `3000` is already in use on the host, for example `APP_PORT="3001"`
+
+Useful commands:
+
+```bash
+npm run docker:up
+npm run docker:down
+npm run docker:logs
+```
+
+### 3. Local Postgres container plus Clerk
 
 Use this when you want a local Postgres instance instead of Neon for database work:
 
@@ -93,7 +120,7 @@ npm run dev
 
 In that mode, replace `DATABASE_URL` and `DIRECT_URL` in `.env` with local Postgres URLs before running the migration.
 
-### 3. Production-mode localhost check
+### 4. Production-mode localhost check
 
 Use this to verify the built app locally before deployment:
 
@@ -109,8 +136,8 @@ This also serves the app at [http://localhost:3000](http://localhost:3000).
 
 The Prisma seed script creates these local accounts:
 
-- Admin: `admin@closestwins.local` / `Admin123!`
-- Player: `player@closestwins.local` / `Player123!`
+- Admin: `admin@closestwins.com` / `Admin123!`
+- User: `user@closestwins.com` / `Player123!`
 
 ## Protected routes
 
@@ -144,9 +171,13 @@ npm run format
 
 - `npm run prisma:generate` regenerates the Prisma client
 - `npm run prisma:migrate` runs Prisma migrations in development
+- `npm run prisma:migrate:deploy` applies committed Prisma migrations in production-style environments
 - `npm run db:seed` seeds the demo users
 - `npm run db:up` starts the optional local PostgreSQL container
 - `npm run db:down` stops the optional local PostgreSQL container
+- `npm run docker:up` starts the full Docker Compose stack
+- `npm run docker:down` stops the full Docker Compose stack
+- `npm run docker:logs` tails the app container logs
 
 ## Neon branch setup
 
@@ -164,8 +195,6 @@ npm run format
 - `/dashboard` as the role-aware redirect entry point
 
 ## Branch naming workflow
-
-This repository includes a GitHub Actions workflow that validates branch names on pushes and pull requests.
 
 Accepted branch patterns:
 

@@ -14,23 +14,28 @@ Use Graphite for all GitHub interactions in this repository, including branch ma
 Prefer Graphite over plain GitHub CLI flows unless a task explicitly requires raw `git` or another tool.
 
 Create one branch per issue.
+
 - Use the issue-aligned branch naming pattern already in use, for example `feature/15-create-prisma-schema`.
 - Keep each branch focused on a single issue or deliverable.
 
 Use one Graphite stack per milestone when work is sequential.
+
 - Milestone 2 is the current example: issues `#15` through `#20` were managed as one ordered stack.
 - Put lower-level foundation work at the bottom of the stack and build later branches on top of it.
 - Restack before submitting when trunk or lower branches change.
 
 Keep PR scope aligned with the branch’s issue.
+
 - Each PR description should describe only that slice of the milestone, not the entire upstack state.
 - If a later restack changes the effective contents of a branch, update the PR description to match the current branch reality.
 
 Prefer updating the existing stack over creating parallel overlapping branches.
+
 - If work depends on an earlier issue branch, stack on top of it instead of branching from `main`.
 - If conflicts appear during `gt restack`, resolve them in a way that preserves the newest intended architecture for the stack.
 
 Before submitting or merging:
+
 - Run `npm run lint`
 - Run `npm run typecheck`
 - Run `npm run format:check` when formatting-sensitive files changed
@@ -39,6 +44,7 @@ Before submitting or merging:
 ## Current Stack
 
 The current product direction for the repository is:
+
 - Frontend: Next.js 16 App Router with React 19 and TypeScript 5
 - Styling: Tailwind CSS 4
 - ORM: Prisma
@@ -50,6 +56,7 @@ The current product direction for the repository is:
 ## Infrastructure Notes
 
 Database:
+
 - The app database is hosted on Neon.
 - Prisma should use the pooled Neon connection for `DATABASE_URL`.
 - Prisma migrations should use the direct Neon connection for `DIRECT_URL`.
@@ -57,27 +64,32 @@ Database:
 - Production deployments should use the Neon `production` branch connection strings.
 
 User management and authentication:
+
 - Clerk is the current authentication and user-management provider.
 - Clerk handles sign-in, sign-up, and session management.
 - Application-specific role and profile data may still live in PostgreSQL through Prisma.
 
 Deployment:
+
 - Production deploys run on Vercel.
 - As of Wednesday, August 12, 2026, the latest known production deployment URL is `https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app`.
 
 ## Local Setup Expectations
 
 Agents should assume local development typically requires:
+
 - `DATABASE_URL`
 - `DIRECT_URL`
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
 - `CLERK_SECRET_KEY`
 
 For this repository:
+
 - local `.env` should point `DATABASE_URL` and `DIRECT_URL` at the Neon `dev` branch
 - Vercel production environment variables should stay pointed at the Neon `production` branch
 
 When documenting or updating setup instructions, distinguish between:
+
 - Neon-backed local development
 - optional local Postgres workflows, if still supported on the branch
 - production deployment configuration on Vercel
@@ -87,6 +99,7 @@ When documenting or updating setup instructions, distinguish between:
 Use one of these localhost flows depending on the task:
 
 - Neon dev flow: `npm install`, `cp .env.example .env`, set Neon and Clerk env vars, then run `npm run dev`.
+- Full Docker Compose flow: `npm install`, `cp .env.example .env`, set Clerk env vars, then run `docker compose up --build`.
 - Local Postgres flow: `npm install`, `cp .env.example .env`, swap `DATABASE_URL` and `DIRECT_URL` to local Postgres values, run `npm run db:up`, run `npm run prisma:migrate -- --name init-auth`, then run `npm run dev`.
 - Production-mode local check: `npm install`, `npm run build`, then `npm run start`.
 

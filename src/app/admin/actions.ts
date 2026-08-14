@@ -3,12 +3,14 @@
 import { randomBytes } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import * as XLSX from "xlsx";
 import { requireRole } from "@/lib/auth-guards";
 import {
   initialActionState,
   type ActionState,
   validateGameInput,
   validateQuestionInput,
+  validateQuestionValues,
 } from "@/lib/admin-validation";
 import { prisma } from "@/lib/prisma";
 
@@ -109,6 +111,26 @@ async function requireOwnedGame(gameId: string, createdById: string) {
   return game;
 }
 
+function normalizeSpreadsheetHeader(value: unknown) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function getCellValue(
+  row: Record<string, unknown>,
+  acceptedHeaders: string[]
+): string {
+  for (const [key, value] of Object.entries(row)) {
+    if (acceptedHeaders.includes(normalizeSpreadsheetHeader(key))) {
+      return String(value ?? "").trim();
+    }
+  }
+
+  return "";
+}
+
 async function requireOwnedQuestion(questionId: string, createdById: string) {
   const question = await prisma.question.findFirst({
     where: {
@@ -201,6 +223,115 @@ export async function createQuestion(
   return {
     status: "success",
     message: "Question created.",
+  };
+}
+
+export async function bulkUploadQuestions(
+  gameId: string,
+  previousState: ActionState = initialActionState,
+  formData: FormData
+): Promise<ActionState> {
+  void previousState;
+  const createdById = await requireAdminDatabaseUserId();
+  await requireOwnedGame(gameId, createdById);
+
+  const upload = formData.get("questionFile");
+
+  if (!(upload instanceof File) || upload.size === 0) {
+    return buildErrorState("Choose a spreadsheet file to upload.", {
+      questionFile: ["Upload an .xlsx, .xls, or .csv file."],
+    });
+  }
+
+  let rows: Record<string, unknown>[];
+
+  try {
+    const bytes = await upload.arrayBuffer();
+    const workbook = XLSX.read(Buffer.from(bytes), { type: "buffer" });
+    const firstSheetName = workbook.SheetNames[0];
+
+    if (!firstSheetName) {
+      return buildErrorState("The uploaded file does not contain any sheets.", {
+        questionFile: ["Add a sheet with question rows and try again."],
+      });
+    }
+
+    rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(
+      workbook.Sheets[firstSheetName],
+      {
+        defval: "",
+      }
+    );
+  } catch {
+    return buildErrorState("We couldn't read that spreadsheet.", {
+      questionFile: ["Use a valid .xlsx, .xls, or .csv file."],
+    });
+  }
+
+  if (rows.length === 0) {
+    return buildErrorState("The spreadsheet is empty.", {
+      questionFile: ["Add at least one question row before uploading."],
+    });
+  }
+
+  const parsedQuestions = rows.map((row, index) => {
+    const prompt = getCellValue(row, ["prompt", "question", "questionprompt"]);
+    const correctAnswer = getCellValue(row, [
+      "correctanswer",
+      "answer",
+      "correct",
+    ]);
+    const explanation = getCellValue(row, ["explanation", "notes"]);
+    const validation = validateQuestionValues(
+      prompt,
+      explanation,
+      correctAnswer
+    );
+
+    return {
+      rowNumber: index + 2,
+      ...validation,
+    };
+  });
+
+  const invalidQuestion = parsedQuestions.find(
+    (question) => Object.keys(question.fieldErrors).length > 0
+  );
+
+  if (invalidQuestion) {
+    const firstError = Object.values(invalidQuestion.fieldErrors)[0]?.[0];
+
+    return buildErrorState(
+      `Row ${invalidQuestion.rowNumber} is invalid${firstError ? `: ${firstError}` : "."}`,
+      {
+        questionFile: [
+          "Use columns named prompt, correct answer, and explanation.",
+        ],
+      }
+    );
+  }
+
+  const orderAggregate = await prisma.question.aggregate({
+    where: { gameId },
+    _max: { order: true },
+  });
+  const startingOrder = (orderAggregate._max.order ?? 0) + 1;
+
+  await prisma.question.createMany({
+    data: parsedQuestions.map((question, index) => ({
+      gameId,
+      prompt: question.prompt,
+      correctAnswer: question.correctAnswer,
+      explanation: question.explanation,
+      order: startingOrder + index,
+    })),
+  });
+
+  revalidatePath(`/admin/games/${gameId}`);
+
+  return {
+    status: "success",
+    message: `Uploaded ${parsedQuestions.length} question${parsedQuestions.length === 1 ? "" : "s"}.`,
   };
 }
 

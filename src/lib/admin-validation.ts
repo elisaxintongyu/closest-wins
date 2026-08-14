@@ -45,10 +45,13 @@ export function validateGameInput(formData: FormData) {
   };
 }
 
-export function validateQuestionInput(formData: FormData) {
-  const prompt = getTrimmedString(formData.get("prompt"));
-  const explanation = getTrimmedString(formData.get("explanation"));
-  const answerInput = getTrimmedString(formData.get("correctAnswer"));
+export function validateQuestionValues(
+  promptInput: string,
+  explanationInput: string,
+  answerInput: string
+) {
+  const prompt = promptInput.trim();
+  const explanation = explanationInput.trim();
   const fieldErrors: Record<string, string[]> = {};
 
   if (!prompt) {
@@ -93,4 +96,11 @@ export function validateQuestionInput(formData: FormData) {
     correctAnswer,
     fieldErrors,
   };
+}
+
+export function validateQuestionInput(formData: FormData) {
+  const promptInput = getTrimmedString(formData.get("prompt"));
+  const explanationInput = getTrimmedString(formData.get("explanation"));
+  const answerInput = getTrimmedString(formData.get("correctAnswer"));
+  return validateQuestionValues(promptInput, explanationInput, answerInput);
 }

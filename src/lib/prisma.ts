@@ -10,8 +10,38 @@ function createPrismaClient() {
   });
 }
 
+function getModelFieldNames(client: PrismaClient, modelName: string) {
+  const runtimeModel = (
+    client as PrismaClient & {
+      _runtimeDataModel?: {
+        models?: Record<
+          string,
+          {
+            fields?: Array<{ name: string }>;
+          }
+        >;
+      };
+    }
+  )._runtimeDataModel?.models?.[modelName];
+
+  return new Set(runtimeModel?.fields?.map((field) => field.name) ?? []);
+}
+
 function hasGameplayDelegates(client: PrismaClient) {
-  return "team" in client && "teamMembership" in client && "guess" in client;
+  if (!("team" in client) || !("teamMembership" in client) || !("guess" in client)) {
+    return false;
+  }
+
+  // During local dev, Next.js can hold onto an older generated Prisma client
+  // across reloads. Require the gameplay relations we depend on before reusing it.
+  const questionFields = getModelFieldNames(client, "Question");
+  const guessFields = getModelFieldNames(client, "Guess");
+
+  return (
+    questionFields.has("guesses") &&
+    guessFields.has("question") &&
+    guessFields.has("team")
+  );
 }
 
 const existingPrisma =
