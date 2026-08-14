@@ -1,6 +1,9 @@
 #!/bin/sh
 set -eu
 
+echo "Validating environment..."
+npm run env:check:docker
+
 echo "Generating Prisma client..."
 npx prisma generate
 

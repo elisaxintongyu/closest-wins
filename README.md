@@ -156,6 +156,7 @@ This is the current production deployment URL, not a custom domain.
 ## Quality checks
 
 ```bash
+npm run env:check
 npm run lint
 npm run typecheck
 npm run format:check
@@ -196,9 +197,22 @@ npm run test:e2e:report
 
 Notes:
 
-- The Playwright config starts the Next.js dev server automatically on `http://127.0.0.1:3000`
-- The initial smoke test covers the public landing page, so it does not require seeding or signing in
-- Protected-route E2E coverage can be added later once we decide on a stable Clerk test-auth strategy
+- The Playwright config starts its own Next.js dev server on `http://localhost:3100`
+- The E2E suite enables an isolated test-auth mode automatically, so it does not depend on live Clerk UI
+- The suite covers auth, question CRUD, authorization boundaries, full gameplay flow, and user-facing empty/error states
+- CI runs the same suite against a local Postgres service in [`.github/workflows/ci.yml`](/Users/elisayu/Desktop/closest-wins/.github/workflows/ci.yml)
+
+## Environment validation
+
+Use the environment check scripts before debugging auth, Prisma, or deployment issues:
+
+```bash
+npm run env:check
+npm run env:check:docker
+npm run env:check:production
+```
+
+These checks verify that required variables are present, avoid example placeholders, and confirm the expected database host for local, Docker, CI, or production flows without printing secrets.
 
 ## Database scripts
 
@@ -262,6 +276,17 @@ The initial production deployment was shipped to Vercel on August 8, 2026.
 - Deploy command: `vercel --prod`
 
 Before future deployments, make sure the Vercel project is linked locally and that the branch is in a reviewable state.
+
+## CI coverage
+
+As of Friday, August 14, 2026, GitHub Actions is configured to:
+
+- validate environment variables for CI
+- apply Prisma migrations to a local Postgres service
+- seed demo users
+- run `npm run lint`
+- run `npm run typecheck`
+- run the full Playwright E2E suite
 
 ## Deployment notes
 

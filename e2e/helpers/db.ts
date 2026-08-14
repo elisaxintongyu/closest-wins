@@ -135,3 +135,25 @@ export async function createTeamForPlayer(input: {
     },
   });
 }
+
+export async function addPlayerToTeam(input: {
+  gameId: string;
+  teamId: string;
+  userEmail: string;
+}) {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { email: input.userEmail.toLowerCase() },
+    select: { id: true },
+  });
+
+  return prisma.teamMembership.create({
+    data: {
+      gameId: input.gameId,
+      teamId: input.teamId,
+      userId: user.id,
+    },
+    select: {
+      id: true,
+    },
+  });
+}

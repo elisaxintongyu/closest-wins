@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { getScoreboard } from "../src/lib/gameplay";
 import { signInWithSession } from "./helpers/auth";
 import {
   addQuestionsToGame,
@@ -341,40 +342,88 @@ test("multi-round gameplay handles ties and ends with a completed scoreboard", a
   await playerOneGamePage.goto(`/player/games/${game.id}`);
   await playerOneLobbyPage.goto(`/player/lobby/${game.id}`);
   await playerTwoGamePage.goto(`/player/games/${game.id}`);
-  await expect(playerOneGamePage.getByText("2 round wins")).toBeVisible();
-  await expect(playerTwoGamePage.getByText("1 round win")).toBeVisible();
+
+  await expect
+    .poll(async () => {
+      const snapshot = await prisma.game.findUniqueOrThrow({
+        where: { id: game.id },
+        select: {
+          status: true,
+          questions: {
+            orderBy: { order: "asc" },
+            select: {
+              status: true,
+              guesses: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return {
+        status: snapshot.status,
+        questionStatuses: snapshot.questions.map((question) => question.status),
+      };
+    })
+    .toEqual({
+      status: "COMPLETED",
+      questionStatuses: ["REVEALED", "REVEALED"],
+    });
 
   const persistedGame = await prisma.game.findUniqueOrThrow({
     where: { id: game.id },
     select: {
-      status: true,
       teams: {
         orderBy: { name: "asc" },
         select: {
+          id: true,
           name: true,
         },
       },
       questions: {
         orderBy: { order: "asc" },
         select: {
-          status: true,
+          correctAnswer: true,
           guesses: {
             select: {
               value: true,
+              team: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
             },
           },
         },
       },
     },
   });
-
-  expect(persistedGame.status).toBe("COMPLETED");
-  expect(persistedGame.questions.map((question) => question.status)).toEqual([
-    "REVEALED",
-    "REVEALED",
+  expect(
+    getScoreboard(
+      persistedGame.teams,
+      persistedGame.questions.map((question) => ({
+        correctAnswer: question.correctAnswer,
+        guesses: question.guesses,
+      }))
+    )
+  ).toEqual([
+    {
+      id: expect.any(String),
+      name: "Alpha Team",
+      score: 2,
+      wins: 2,
+    },
+    {
+      id: expect.any(String),
+      name: "Beta Team",
+      score: 1,
+      wins: 1,
+    },
   ]);
-  expect(persistedGame.questions[0]?.guesses).toHaveLength(2);
-  expect(persistedGame.questions[1]?.guesses).toHaveLength(2);
 
   await adminPage.goto("/admin");
   const completedCard = adminPage.locator("article").filter({

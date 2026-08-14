@@ -313,7 +313,21 @@ export async function deleteQuestion(questionId: string) {
       },
       data: {
         order: {
-          decrement: 1,
+          increment: 1000,
+        },
+      },
+    });
+
+    await tx.question.updateMany({
+      where: {
+        gameId: question.gameId,
+        order: {
+          gt: question.order + 1000,
+        },
+      },
+      data: {
+        order: {
+          decrement: 1001,
         },
       },
     });
