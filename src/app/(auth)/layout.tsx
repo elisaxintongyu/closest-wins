@@ -1,3 +1,4 @@
+// Wraps the sign-in and sign-up pages in the shared auth layout.
 import type { ReactNode } from "react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {

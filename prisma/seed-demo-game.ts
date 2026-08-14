@@ -11,7 +11,8 @@ const DEMO_QUESTIONS = [
   {
     prompt: "How many minutes are in a week?",
     correctAnswer: 10080,
-    explanation: "A week has 7 days, each day has 24 hours, and each hour has 60 minutes.",
+    explanation:
+      "A week has 7 days, each day has 24 hours, and each hour has 60 minutes.",
   },
   {
     prompt: "What is the average distance from Earth to the Moon in miles?",
@@ -21,7 +22,8 @@ const DEMO_QUESTIONS = [
   {
     prompt: "How many bones are in an adult human body?",
     correctAnswer: 206,
-    explanation: "Most adults have 206 bones after some fuse together during growth.",
+    explanation:
+      "Most adults have 206 bones after some fuse together during growth.",
   },
   {
     prompt: "What year was the first iPhone released?",
@@ -29,9 +31,11 @@ const DEMO_QUESTIONS = [
     explanation: "Apple released the first iPhone in June 2007.",
   },
   {
-    prompt: "How many players are on the field for one soccer team during play?",
+    prompt:
+      "How many players are on the field for one soccer team during play?",
     correctAnswer: 11,
-    explanation: "A soccer team fields 11 players at a time, including the goalkeeper.",
+    explanation:
+      "A soccer team fields 11 players at a time, including the goalkeeper.",
   },
   {
     prompt: "How many ounces are in a U.S. gallon?",
@@ -46,12 +50,14 @@ const DEMO_QUESTIONS = [
   {
     prompt: "What is the freezing point of water in Fahrenheit?",
     correctAnswer: 32,
-    explanation: "Water freezes at 32 degrees Fahrenheit under standard atmospheric pressure.",
+    explanation:
+      "Water freezes at 32 degrees Fahrenheit under standard atmospheric pressure.",
   },
   {
     prompt: "How many feet tall is a regulation basketball hoop?",
     correctAnswer: 10,
-    explanation: "The rim of a regulation basketball hoop is 10 feet above the floor.",
+    explanation:
+      "The rim of a regulation basketball hoop is 10 feet above the floor.",
   },
   {
     prompt: "How many days are in a leap year?",

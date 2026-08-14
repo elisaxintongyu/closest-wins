@@ -1,3 +1,4 @@
+// Shows the missing-game state when a player cannot open a game page.
 import { RouteStateCard } from "@/components/dashboard/route-state-card";
 
 export default function PlayerGameNotFound() {

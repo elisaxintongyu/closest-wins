@@ -26,7 +26,9 @@ export async function createPlayerTestAccount(
   await page.goto("/sign-up");
   await page.getByLabel("Player name").fill(input.name);
   await page.getByLabel("Player email").fill(input.email);
-  await page.getByRole("button", { name: "Create player test account" }).click();
+  await page
+    .getByRole("button", { name: "Create player test account" })
+    .click();
   await page.waitForURL("/player");
 }
 

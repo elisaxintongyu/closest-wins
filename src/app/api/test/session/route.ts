@@ -1,3 +1,4 @@
+// Handles test-only session creation and sign-out for Playwright auth flows.
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
@@ -94,5 +95,7 @@ export async function POST(request: Request) {
     }
   );
 
-  return NextResponse.redirect(new URL(normalizeRedirect(formData.get("redirectTo")), request.url));
+  return NextResponse.redirect(
+    new URL(normalizeRedirect(formData.get("redirectTo")), request.url)
+  );
 }

@@ -1,3 +1,4 @@
+// Redirects signed-in users to the dashboard that matches their role.
 import { requireSession } from "@/lib/auth-guards";
 import { getDashboardHref } from "@/lib/roles";
 import { redirect } from "next/navigation";

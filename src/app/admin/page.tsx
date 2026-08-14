@@ -1,3 +1,4 @@
+// Renders the admin dashboard for creating and tracking game sessions.
 import Link from "next/link";
 import {
   AdminGameSummarySidebar,

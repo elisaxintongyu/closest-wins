@@ -1,3 +1,4 @@
+// Renders the shared player lobby for team presence and revealed results.
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";

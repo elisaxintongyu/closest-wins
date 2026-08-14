@@ -1,3 +1,4 @@
+// Defines the shared application shell and metadata for every route.
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -25,9 +26,5 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     return content;
   }
 
-  return (
-    <ClerkProvider>
-      {content}
-    </ClerkProvider>
-  );
+  return <ClerkProvider>{content}</ClerkProvider>;
 }

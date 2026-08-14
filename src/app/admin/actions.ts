@@ -416,7 +416,9 @@ export async function deletePresetTeam(teamId: string) {
   }
 
   if (team._count.memberships > 0 || team._count.guesses > 0) {
-    throw new Error("Preset team cannot be removed after players join or guess.");
+    throw new Error(
+      "Preset team cannot be removed after players join or guess."
+    );
   }
 
   await prisma.team.delete({

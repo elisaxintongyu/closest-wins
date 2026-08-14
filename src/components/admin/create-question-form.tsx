@@ -1,5 +1,7 @@
 "use client";
 
+// Renders the admin form for adding a single question to a game.
+
 import { useActionState } from "react";
 import { createQuestion } from "@/app/admin/actions";
 import { FieldErrors, FormMessage } from "@/components/admin/form-feedback";

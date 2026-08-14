@@ -1,5 +1,7 @@
 "use client";
 
+// Renders the admin form for creating a new game session.
+
 import { useActionState } from "react";
 import { createGame } from "@/app/admin/actions";
 import { FieldErrors, FormMessage } from "@/components/admin/form-feedback";

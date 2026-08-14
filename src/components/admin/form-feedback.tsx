@@ -1,5 +1,7 @@
 "use client";
 
+// Renders reusable admin form validation and status feedback.
+
 import type { ActionState } from "@/lib/admin-validation";
 
 type FormFeedbackProps = {

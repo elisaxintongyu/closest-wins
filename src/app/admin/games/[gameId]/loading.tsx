@@ -1,3 +1,4 @@
+// Shows the loading state while an admin game workspace is fetched.
 import { LoadingShell } from "@/components/dashboard/loading-shell";
 
 export default function AdminGameLoading() {

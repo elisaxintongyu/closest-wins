@@ -1,5 +1,7 @@
 "use client";
 
+// Renders the player form for submitting a single round guess.
+
 import { useActionState } from "react";
 import { submitGuess } from "@/app/player/actions";
 import { SubmitButton } from "@/components/admin/submit-button";

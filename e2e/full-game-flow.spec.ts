@@ -108,7 +108,9 @@ test("single-round gameplay flows from join to reveal and completion", async ({
 
   await adminPage.reload();
   const adminQuestionCard = getQuestionCard(adminPage, 1);
-  await expect(adminQuestionCard.getByText("1 of 1 team submitted")).toBeVisible();
+  await expect(
+    adminQuestionCard.getByText("1 of 1 team submitted")
+  ).toBeVisible();
   await expect(adminQuestionCard.getByText("1. Alpha Team")).toBeVisible();
   await expect(adminQuestionCard.getByText("58")).toBeVisible();
 

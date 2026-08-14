@@ -1,3 +1,4 @@
+// Renders the player-facing scoreboard for the current game.
 type ScoreboardPanelProps = {
   standings: {
     id: string;

@@ -1,3 +1,4 @@
+// Shows the loading state while the player dashboard is fetched.
 import { LoadingShell } from "@/components/dashboard/loading-shell";
 
 export default function PlayerLoading() {

@@ -1,3 +1,4 @@
+// Renders the currently open question or waiting state for players.
 import type { ReactNode } from "react";
 
 type ActiveQuestionPanelProps = {

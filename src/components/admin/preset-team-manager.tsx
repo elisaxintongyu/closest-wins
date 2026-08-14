@@ -1,5 +1,7 @@
 "use client";
 
+// Renders the admin interface for managing preset teams in a game.
+
 import { useActionState } from "react";
 import { createPresetTeam, deletePresetTeam } from "@/app/admin/actions";
 import { FieldErrors, FormMessage } from "@/components/admin/form-feedback";
@@ -17,10 +19,7 @@ type PresetTeamManagerProps = {
   }>;
 };
 
-export function PresetTeamManager({
-  gameId,
-  teams,
-}: PresetTeamManagerProps) {
+export function PresetTeamManager({ gameId, teams }: PresetTeamManagerProps) {
   const createPresetTeamForGame = createPresetTeam.bind(null, gameId);
   const [state, formAction] = useActionState(
     createPresetTeamForGame,

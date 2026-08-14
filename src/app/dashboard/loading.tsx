@@ -1,3 +1,4 @@
+// Shows the loading state while role-aware dashboard routing resolves.
 import { LoadingShell } from "@/components/dashboard/loading-shell";
 
 export default function DashboardLoading() {

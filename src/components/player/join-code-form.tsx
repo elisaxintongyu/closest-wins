@@ -1,3 +1,4 @@
+// Renders the player form for looking up a game by join code.
 type JoinCodeFormProps = {
   defaultJoinCode?: string;
 };

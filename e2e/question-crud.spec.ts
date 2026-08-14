@@ -58,7 +58,9 @@ test("admin can create, edit, reorder, and delete questions with persisted order
     await createQuestionForm
       .getByLabel("Explanation")
       .fill(`Explanation ${index + 1}`);
-    await createQuestionForm.getByRole("button", { name: "Add question" }).click();
+    await createQuestionForm
+      .getByRole("button", { name: "Add question" })
+      .click();
     await expect(page.getByText("Question created.")).toBeVisible();
     await expect
       .poll(() => getQuestionsForGame(gameId!))
@@ -77,7 +79,9 @@ test("admin can create, edit, reorder, and delete questions with persisted order
   await secondQuestionCard
     .getByLabel("Explanation")
     .fill("Nine players start on defense.");
-  await secondQuestionCard.getByRole("button", { name: "Save changes" }).click();
+  await secondQuestionCard
+    .getByRole("button", { name: "Save changes" })
+    .click();
   await expect(secondQuestionCard.getByText("Question saved.")).toBeVisible();
 
   await expect
@@ -113,7 +117,9 @@ test("admin can create, edit, reorder, and delete questions with persisted order
   const firstQuestionCard = page.locator("article").filter({
     hasText: "Question 1",
   });
-  await firstQuestionCard.getByRole("button", { name: "Delete question" }).click();
+  await firstQuestionCard
+    .getByRole("button", { name: "Delete question" })
+    .click();
 
   await expect.poll(() => getQuestionsForGame(gameId!)).toHaveLength(2);
   questions = await getQuestionsForGame(gameId!);
@@ -147,25 +153,33 @@ test("admin can bulk upload valid spreadsheets and sees invalid or empty upload 
   await page.goto(`/admin/games/${game.id}`);
 
   await page.getByRole("button", { name: "Upload spreadsheet" }).click();
-  await expect(page.getByText("Choose a spreadsheet file to upload.")).toBeVisible();
+  await expect(
+    page.getByText("Choose a spreadsheet file to upload.")
+  ).toBeVisible();
 
-  await page.getByLabel("Excel file").setInputFiles(
-    path.join(process.cwd(), "e2e/fixtures/questions-valid.csv")
-  );
+  await page
+    .getByLabel("Excel file")
+    .setInputFiles(
+      path.join(process.cwd(), "e2e/fixtures/questions-valid.csv")
+    );
   await page.getByRole("button", { name: "Upload spreadsheet" }).click();
   await expect(page.getByText("Uploaded 2 questions.")).toBeVisible();
 
   await expect.poll(() => getQuestionsForGame(game.id)).toHaveLength(2);
 
-  await page.getByLabel("Excel file").setInputFiles(
-    path.join(process.cwd(), "e2e/fixtures/questions-invalid.csv")
-  );
+  await page
+    .getByLabel("Excel file")
+    .setInputFiles(
+      path.join(process.cwd(), "e2e/fixtures/questions-invalid.csv")
+    );
   await page.getByRole("button", { name: "Upload spreadsheet" }).click();
   await expect(page.getByText(/Row 2 is invalid/)).toBeVisible();
 
-  await page.getByLabel("Excel file").setInputFiles(
-    path.join(process.cwd(), "e2e/fixtures/questions-empty.csv")
-  );
+  await page
+    .getByLabel("Excel file")
+    .setInputFiles(
+      path.join(process.cwd(), "e2e/fixtures/questions-empty.csv")
+    );
   await page.getByRole("button", { name: "Upload spreadsheet" }).click();
   await expect(page.getByText("The spreadsheet is empty.")).toBeVisible();
 });
@@ -231,9 +245,11 @@ test("bulk upload appends questions in order and accepts alternate spreadsheet h
   });
 
   await page.goto(`/admin/games/${game.id}`);
-  await page.getByLabel("Excel file").setInputFiles(
-    path.join(process.cwd(), "e2e/fixtures/questions-alternate-headers.csv")
-  );
+  await page
+    .getByLabel("Excel file")
+    .setInputFiles(
+      path.join(process.cwd(), "e2e/fixtures/questions-alternate-headers.csv")
+    );
   await page.getByRole("button", { name: "Upload spreadsheet" }).click();
   await expect(page.getByText("Uploaded 2 questions.")).toBeVisible();
 

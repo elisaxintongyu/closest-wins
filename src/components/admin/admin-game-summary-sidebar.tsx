@@ -1,3 +1,4 @@
+// Renders the admin sidebar that summarizes current and completed games.
 import Link from "next/link";
 
 export type AdminGameSummary = {

@@ -1,5 +1,7 @@
 "use client";
 
+// Renders the admin editor and round controls for a single question.
+
 import { useActionState } from "react";
 import {
   closeQuestionRound,

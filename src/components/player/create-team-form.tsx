@@ -1,5 +1,7 @@
 "use client";
 
+// Renders the player form for joining one of the host's preset teams.
+
 import { useActionState } from "react";
 import { createTeam } from "@/app/player/actions";
 import { SubmitButton } from "@/components/admin/submit-button";

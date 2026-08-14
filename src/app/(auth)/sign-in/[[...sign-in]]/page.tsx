@@ -1,3 +1,4 @@
+// Renders the sign-in page for returning admins and players.
 import Link from "next/link";
 import { SignIn } from "@clerk/nextjs";
 import { TestAuthPanel } from "@/components/auth/test-auth-panel";

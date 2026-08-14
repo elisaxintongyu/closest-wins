@@ -3,10 +3,7 @@ import { loadEnvConfig } from "@next/env";
 loadEnvConfig(process.cwd());
 
 const mode = (process.argv[2] ?? "local") as
-  | "local"
-  | "docker"
-  | "production"
-  | "ci";
+  "local" | "docker" | "production" | "ci";
 
 const requiredVars = [
   "DATABASE_URL",
@@ -69,7 +66,9 @@ function assertIncludes(
 
 function printSummary() {
   console.log(`Environment check passed for ${mode}.`);
-  console.log(`DATABASE_URL=${redactConnectionString(readEnv("DATABASE_URL"))}`);
+  console.log(
+    `DATABASE_URL=${redactConnectionString(readEnv("DATABASE_URL"))}`
+  );
   console.log(`DIRECT_URL=${redactConnectionString(readEnv("DIRECT_URL"))}`);
   console.log(
     `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${readEnv(

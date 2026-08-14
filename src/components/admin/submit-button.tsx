@@ -1,5 +1,7 @@
 "use client";
 
+// Renders a submit button with pending-state styling for forms.
+
 import type { ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 
