@@ -14,6 +14,7 @@ import {
   initialActionState,
   type ActionState,
   validateGameInput,
+  validatePresetTeamInput,
   validateQuestionInput,
   validateQuestionValues,
 } from "@/lib/admin-validation";
@@ -147,6 +148,59 @@ export async function createQuestion(
   return {
     status: "success",
     message: "Question created.",
+  };
+}
+
+export async function createPresetTeam(
+  gameId: string,
+  previousState: ActionState = initialActionState,
+  formData: FormData
+): Promise<ActionState> {
+  void previousState;
+  const createdById = await requireAdminDatabaseUserId();
+  await findOwnedGame(gameId, createdById);
+  const { teamName, fieldErrors } = validatePresetTeamInput(formData);
+
+  if (hasFieldErrors(fieldErrors)) {
+    return buildErrorState(
+      "Please fix the preset team details and try again.",
+      fieldErrors
+    );
+  }
+
+  const normalizedName = teamName.replace(/\s+/g, " ");
+  const existingTeam = await prisma.team.findFirst({
+    where: {
+      gameId,
+      name: {
+        equals: normalizedName,
+        mode: "insensitive",
+      },
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (existingTeam) {
+    return buildErrorState("That preset team already exists in this game.", {
+      teamName: ["Choose a different preset team name."],
+    });
+  }
+
+  await prisma.team.create({
+    data: {
+      gameId,
+      name: normalizedName,
+    },
+  });
+
+  revalidatePath(`/admin/games/${gameId}`);
+  revalidatePath("/player");
+
+  return {
+    status: "success",
+    message: "Preset team created.",
   };
 }
 
@@ -334,6 +388,45 @@ export async function deleteQuestion(questionId: string) {
   });
 
   revalidatePath(`/admin/games/${question.gameId}`);
+}
+
+export async function deletePresetTeam(teamId: string) {
+  const createdById = await requireAdminDatabaseUserId();
+  const team = await prisma.team.findFirst({
+    where: {
+      id: teamId,
+      game: {
+        createdById,
+      },
+    },
+    select: {
+      id: true,
+      gameId: true,
+      _count: {
+        select: {
+          memberships: true,
+          guesses: true,
+        },
+      },
+    },
+  });
+
+  if (!team) {
+    throw new Error("Preset team not found.");
+  }
+
+  if (team._count.memberships > 0 || team._count.guesses > 0) {
+    throw new Error("Preset team cannot be removed after players join or guess.");
+  }
+
+  await prisma.team.delete({
+    where: {
+      id: team.id,
+    },
+  });
+
+  revalidatePath(`/admin/games/${team.gameId}`);
+  revalidatePath("/player");
 }
 
 async function moveQuestion(questionId: string, direction: "up" | "down") {

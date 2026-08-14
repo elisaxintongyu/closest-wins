@@ -11,6 +11,7 @@ export const initialActionState: ActionState = {
 const GAME_TITLE_MAX_LENGTH = 100;
 const QUESTION_PROMPT_MAX_LENGTH = 500;
 const QUESTION_EXPLANATION_MAX_LENGTH = 2000;
+const TEAM_NAME_MAX_LENGTH = 40;
 
 function getTrimmedString(value: FormDataEntryValue | null) {
   return typeof value === "string" ? value.trim() : "";
@@ -103,4 +104,28 @@ export function validateQuestionInput(formData: FormData) {
   const explanationInput = getTrimmedString(formData.get("explanation"));
   const answerInput = getTrimmedString(formData.get("correctAnswer"));
   return validateQuestionValues(promptInput, explanationInput, answerInput);
+}
+
+export function validatePresetTeamInput(formData: FormData) {
+  const teamName = getTrimmedString(formData.get("teamName"));
+  const fieldErrors: Record<string, string[]> = {};
+
+  if (teamName.length < 2) {
+    pushFieldError(
+      fieldErrors,
+      "teamName",
+      "Team name must be at least 2 characters long."
+    );
+  } else if (teamName.length > TEAM_NAME_MAX_LENGTH) {
+    pushFieldError(
+      fieldErrors,
+      "teamName",
+      `Team name must be ${TEAM_NAME_MAX_LENGTH} characters or fewer.`
+    );
+  }
+
+  return {
+    teamName,
+    fieldErrors,
+  };
 }

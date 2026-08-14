@@ -34,7 +34,7 @@ export async function createTeam(
   formData: FormData
 ): Promise<PlayerActionState> {
   void previousState;
-  const { joinCode, teamName, fieldErrors } = validateCreateTeamInput(formData);
+  const { joinCode, teamId, fieldErrors } = validateCreateTeamInput(formData);
 
   if (hasFieldErrors(fieldErrors)) {
     return buildErrorState(
@@ -44,7 +44,6 @@ export async function createTeam(
   }
 
   const player = await requirePlayerDatabaseUser();
-  const normalizedName = teamName.replace(/\s+/g, " ");
 
   const game = await prisma.game.findUnique({
     where: {
@@ -54,6 +53,17 @@ export async function createTeam(
       id: true,
       title: true,
       status: true,
+      teams: {
+        where: {
+          id: teamId,
+        },
+        select: {
+          id: true,
+          name: true,
+          captainId: true,
+        },
+        take: 1,
+      },
     },
   });
 
@@ -83,37 +93,37 @@ export async function createTeam(
     redirect(`/player/games/${game.id}?status=already-joined`);
   }
 
-  const existingTeam = await prisma.team.findFirst({
-    where: {
-      gameId: game.id,
-      name: {
-        equals: normalizedName,
-        mode: "insensitive",
-      },
-    },
-    select: {
-      id: true,
-    },
-  });
+  const selectedTeam = game.teams[0];
 
-  if (existingTeam) {
-    return buildErrorState("That team name is already taken in this game.", {
-      teamName: ["Choose a different team name."],
+  if (!selectedTeam) {
+    return buildErrorState("Choose one of the preset teams for this game.", {
+      teamId: ["Pick a valid preset team before joining."],
     });
   }
 
   const team = await prisma.$transaction(async (tx) => {
-    return tx.team.create({
+    await tx.teamMembership.create({
       data: {
         gameId: game.id,
-        captainId: player.id,
-        name: normalizedName,
-        memberships: {
-          create: {
-            gameId: game.id,
-            userId: player.id,
-          },
+        teamId: selectedTeam.id,
+        userId: player.id,
+      },
+    });
+
+    if (!selectedTeam.captainId) {
+      await tx.team.update({
+        where: {
+          id: selectedTeam.id,
         },
+        data: {
+          captainId: player.id,
+        },
+      });
+    }
+
+    return tx.team.findUniqueOrThrow({
+      where: {
+        id: selectedTeam.id,
       },
       select: {
         id: true,

@@ -38,6 +38,20 @@ export default async function PlayerPage({
                 teams: true,
               },
             },
+            teams: {
+              orderBy: {
+                createdAt: "asc",
+              },
+              select: {
+                id: true,
+                name: true,
+                _count: {
+                  select: {
+                    memberships: true,
+                  },
+                },
+              },
+            },
           },
         })
       : null;
@@ -118,17 +132,24 @@ export default async function PlayerPage({
         <section className="space-y-4">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold tracking-[-0.03em] text-stone-950">
-              Name your team
+              Pick your team
             </h2>
             <p className="text-sm leading-7 text-stone-700">
-              Once the join code checks out, create the team that will compete
-              in this game.
+              Once the join code checks out, choose one of the preset teams the
+              host prepared for this game.
             </p>
           </div>
 
           <CreateTeamForm
             joinCode={selectedGame?.joinCode}
             gameTitle={selectedGame?.title}
+            presetTeams={
+              selectedGame?.teams.map((team) => ({
+                id: team.id,
+                name: team.name,
+                memberCount: team._count.memberships,
+              })) ?? []
+            }
           />
 
           <div className="space-y-3">

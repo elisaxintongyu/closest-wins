@@ -8,34 +8,26 @@ export const initialPlayerActionState: PlayerActionState = {
   status: "idle",
 };
 
-const TEAM_NAME_MAX_LENGTH = 40;
-
 function normalizeValue(formData: FormData, key: string) {
   return formData.get(key)?.toString().trim() ?? "";
 }
 
 export function validateCreateTeamInput(formData: FormData) {
   const joinCode = normalizeValue(formData, "joinCode").toUpperCase();
-  const teamName = normalizeValue(formData, "teamName");
+  const teamId = normalizeValue(formData, "teamId");
   const fieldErrors: Record<string, string[]> = {};
 
   if (joinCode.length !== 6) {
     fieldErrors.joinCode = ["Enter the 6-character game join code."];
   }
 
-  if (teamName.length < 2) {
-    fieldErrors.teamName = ["Enter a team name with at least 2 characters."];
-  }
-
-  if (teamName.length > TEAM_NAME_MAX_LENGTH) {
-    fieldErrors.teamName = [
-      `Keep the team name under ${TEAM_NAME_MAX_LENGTH} characters.`,
-    ];
+  if (!teamId) {
+    fieldErrors.teamId = ["Choose one of the host's preset teams."];
   }
 
   return {
     joinCode,
-    teamName,
+    teamId,
     fieldErrors,
   };
 }
