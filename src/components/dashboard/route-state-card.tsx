@@ -1,3 +1,4 @@
+// Renders a reusable full-page state card for errors and missing routes.
 import Link from "next/link";
 
 type RouteStateCardProps = {

@@ -33,8 +33,8 @@ async function main() {
         user,
       },
       null,
-      2,
-    ),
+      2
+    )
   );
 }
 

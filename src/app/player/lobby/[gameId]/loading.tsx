@@ -1,3 +1,4 @@
+// Shows the loading state while a player lobby page is fetched.
 import { LoadingShell } from "@/components/dashboard/loading-shell";
 
 export default function PlayerLobbyLoading() {

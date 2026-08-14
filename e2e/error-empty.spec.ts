@@ -70,7 +70,9 @@ test("player empty states, invalid join codes, and preset team requirements are 
 
   await page.goto("/player");
   await expect(
-    page.getByText("No active game pages yet. Join a game above to create your first team home.")
+    page.getByText(
+      "No active game pages yet. Join a game above to create your first team home."
+    )
   ).toBeVisible();
 
   await page.goto("/player?joinCode=BAD000");

@@ -1,5 +1,7 @@
 "use client";
 
+// Shows a recoverable error state for admin routes.
+
 import Link from "next/link";
 
 export default function AdminError({ reset }: { reset: () => void }) {

@@ -1,3 +1,4 @@
+// Renders the shared dashboard layout used across admin and player pages.
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";

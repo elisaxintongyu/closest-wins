@@ -1,3 +1,4 @@
+// Renders the revealed-answer summary and updated standings preview.
 type RevealedAnswerPanelProps = {
   revealedQuestion: {
     order: number;

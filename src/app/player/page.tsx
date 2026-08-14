@@ -1,3 +1,4 @@
+// Renders the player dashboard for join-code lookup and team entry.
 import Link from "next/link";
 import { CreateTeamForm } from "@/components/player/create-team-form";
 import { JoinCodeForm } from "@/components/player/join-code-form";

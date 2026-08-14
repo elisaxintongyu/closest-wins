@@ -1,5 +1,7 @@
 "use client";
 
+// Renders the admin form for bulk-uploading question spreadsheets.
+
 import { useActionState } from "react";
 import { bulkUploadQuestions } from "@/app/admin/actions";
 import { FieldErrors, FormMessage } from "@/components/admin/form-feedback";

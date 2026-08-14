@@ -1,3 +1,4 @@
+// Handles test-only authorization probes used by the Playwright suite.
 import { NextResponse } from "next/server";
 import { findOwnedGame, findOwnedQuestion } from "@/lib/admin-access";
 import { getOptionalSession } from "@/lib/auth-guards";

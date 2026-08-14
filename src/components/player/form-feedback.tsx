@@ -1,3 +1,4 @@
+// Renders reusable player form validation and status feedback.
 import type { PlayerActionState } from "@/lib/player-validation";
 
 export function PlayerFieldErrors({

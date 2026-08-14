@@ -1,5 +1,7 @@
 "use client";
 
+// Shows the root-level recoverable error state for the app shell.
+
 import { RouteStateCard } from "@/components/dashboard/route-state-card";
 
 export default function GlobalError() {

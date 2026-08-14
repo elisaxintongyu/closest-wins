@@ -1,3 +1,4 @@
+// Shows the missing-lobby state when a player cannot access a lobby.
 import { RouteStateCard } from "@/components/dashboard/route-state-card";
 
 export default function PlayerLobbyNotFound() {

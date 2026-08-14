@@ -1,3 +1,4 @@
+// Shows the missing-game state when an admin opens an unavailable game.
 import { RouteStateCard } from "@/components/dashboard/route-state-card";
 
 export default function AdminGameNotFound() {

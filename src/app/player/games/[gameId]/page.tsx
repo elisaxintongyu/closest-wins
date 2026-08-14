@@ -1,3 +1,4 @@
+// Renders the main player game page for guesses, reveals, and standings.
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActiveQuestionPanel } from "@/components/player/active-question-panel";

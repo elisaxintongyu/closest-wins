@@ -1,3 +1,4 @@
+// Renders the sign-up page for creating new player accounts.
 import Link from "next/link";
 import { SignUp } from "@clerk/nextjs";
 import { TestAuthPanel } from "@/components/auth/test-auth-panel";

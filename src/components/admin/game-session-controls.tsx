@@ -1,5 +1,7 @@
 "use client";
 
+// Renders admin controls for ending or resetting a game session.
+
 import { endGameSession, resetGameSession } from "@/app/admin/actions";
 import { SubmitButton } from "@/components/admin/submit-button";
 

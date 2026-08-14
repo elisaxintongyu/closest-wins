@@ -54,7 +54,5 @@ export async function getE2ETestSession() {
   }
 
   const cookieStore = await cookies();
-  return decodeE2ETestSession(
-    cookieStore.get(E2E_TEST_SESSION_COOKIE)?.value
-  );
+  return decodeE2ETestSession(cookieStore.get(E2E_TEST_SESSION_COOKIE)?.value);
 }

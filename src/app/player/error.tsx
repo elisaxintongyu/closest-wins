@@ -1,5 +1,7 @@
 "use client";
 
+// Shows a recoverable error state for player routes.
+
 import Link from "next/link";
 
 export default function PlayerError({ reset }: { reset: () => void }) {

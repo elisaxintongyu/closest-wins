@@ -28,7 +28,11 @@ function getModelFieldNames(client: PrismaClient, modelName: string) {
 }
 
 function hasGameplayDelegates(client: PrismaClient) {
-  if (!("team" in client) || !("teamMembership" in client) || !("guess" in client)) {
+  if (
+    !("team" in client) ||
+    !("teamMembership" in client) ||
+    !("guess" in client)
+  ) {
     return false;
   }
 

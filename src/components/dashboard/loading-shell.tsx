@@ -1,3 +1,4 @@
+// Renders the shared skeleton loading shell for dashboard routes.
 type LoadingShellProps = {
   eyebrow: string;
   title: string;

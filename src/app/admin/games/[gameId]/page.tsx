@@ -1,3 +1,4 @@
+// Renders the admin workspace for managing one game's rounds, teams, and questions.
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BulkQuestionUploadForm } from "@/components/admin/bulk-question-upload-form";

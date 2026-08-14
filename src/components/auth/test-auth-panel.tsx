@@ -1,3 +1,4 @@
+// Renders the Playwright-only auth panel for test account access.
 import Link from "next/link";
 
 type TestAuthPanelProps = {
