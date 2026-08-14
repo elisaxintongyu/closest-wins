@@ -440,3 +440,108 @@ test("multi-round gameplay handles ties and ends with a completed scoreboard", a
   await playerOneContext.close();
   await playerTwoContext.close();
 });
+
+test("admin can explicitly end and reset a game session", async ({
+  browser,
+}) => {
+  await ensureUser({
+    email: "admin@closestwins.com",
+    name: "Closest Wins Admin",
+    role: "ADMIN",
+  });
+  await ensureUser({
+    email: "player.one@closestwins.com",
+    name: "Player One",
+    role: "PLAYER",
+  });
+
+  const game = await createGameForAdmin({
+    adminEmail: "admin@closestwins.com",
+    title: `Game control flow ${Date.now()}`,
+  });
+  await addQuestionsToGame(game.id, [
+    {
+      prompt: "How many hours are in a day?",
+      correctAnswer: 24,
+      explanation: "A day contains 24 hours.",
+    },
+  ]);
+
+  const adminContext = await browser.newContext();
+  const playerContext = await browser.newContext();
+  const adminPage = await adminContext.newPage();
+  const playerPage = await playerContext.newPage();
+
+  await signInWithSession(adminPage, {
+    email: "admin@closestwins.com",
+    name: "Closest Wins Admin",
+    role: "ADMIN",
+  });
+  await signInWithSession(playerPage, {
+    email: "player.one@closestwins.com",
+    name: "Player One",
+    role: "PLAYER",
+  });
+
+  await joinGame(playerPage, game.joinCode, "Alpha Team");
+  await adminPage.goto(`/admin/games/${game.id}`);
+
+  await adminPage.getByRole("button", { name: "End game" }).click();
+
+  await expect
+    .poll(async () => {
+      const endedGame = await prisma.game.findUniqueOrThrow({
+        where: { id: game.id },
+        select: { status: true },
+      });
+
+      return endedGame.status;
+    })
+    .toBe("COMPLETED");
+
+  await playerPage.goto(`/player/games/${game.id}`);
+  await expect(playerPage.getByText("Current status: COMPLETED")).toBeVisible();
+
+  await adminPage.goto(`/admin/games/${game.id}`);
+  await adminPage.getByRole("button", { name: "Reset game" }).click();
+
+  await expect
+    .poll(async () => {
+      const resetGame = await prisma.game.findUniqueOrThrow({
+        where: { id: game.id },
+        select: {
+          status: true,
+          questions: {
+            select: {
+              status: true,
+              guesses: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return {
+        status: resetGame.status,
+        questionStatus: resetGame.questions[0]?.status,
+        guessCount: resetGame.questions[0]?.guesses.length ?? 0,
+      };
+    })
+    .toEqual({
+      status: "DRAFT",
+      questionStatus: "HIDDEN",
+      guessCount: 0,
+    });
+
+  await playerPage.goto(`/player/games/${game.id}`);
+  await expect(playerPage.getByText("Current status: DRAFT")).toBeVisible();
+  await expect(
+    playerPage.getByRole("heading", { name: "Waiting for the next round" })
+  ).toBeVisible();
+
+  await adminContext.close();
+  await playerContext.close();
+});

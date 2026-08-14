@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BulkQuestionUploadForm } from "@/components/admin/bulk-question-upload-form";
 import { CreateQuestionForm } from "@/components/admin/create-question-form";
+import { GameSessionControls } from "@/components/admin/game-session-controls";
 import { QuestionEditor } from "@/components/admin/question-editor";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { requireRole } from "@/lib/auth-guards";
@@ -141,6 +142,8 @@ export default async function AdminGamePage({
             </p>
           </article>
         </section>
+
+        <GameSessionControls gameId={game.id} gameStatus={game.status} />
 
         <section className="space-y-4">
           <div className="space-y-2">
