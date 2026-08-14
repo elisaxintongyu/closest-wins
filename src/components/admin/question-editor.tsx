@@ -61,49 +61,49 @@ export function QuestionEditor({
         </div>
         <div className="grid w-full gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-end">
           <form action={openQuestionRoundById}>
-            <button
-              type="submit"
+            <SubmitButton
+              pendingLabel="Opening..."
               disabled={!canOpenRound}
               className="min-h-11 w-full rounded-lg border border-emerald-300 px-3 py-2 text-sm text-emerald-800 disabled:opacity-50 sm:w-auto"
             >
               Open round
-            </button>
+            </SubmitButton>
           </form>
           <form action={closeQuestionRoundById}>
-            <button
-              type="submit"
+            <SubmitButton
+              pendingLabel="Closing..."
               disabled={!canCloseRound}
               className="min-h-11 w-full rounded-lg border border-amber-300 px-3 py-2 text-sm text-amber-800 disabled:opacity-50 sm:w-auto"
             >
               Close round
-            </button>
+            </SubmitButton>
           </form>
           <form action={revealQuestionRoundById}>
-            <button
-              type="submit"
+            <SubmitButton
+              pendingLabel="Revealing..."
               disabled={!canRevealRound}
               className="min-h-11 w-full rounded-lg border border-sky-300 px-3 py-2 text-sm text-sky-800 disabled:opacity-50 sm:w-auto"
             >
               Reveal answer
-            </button>
+            </SubmitButton>
           </form>
           <form action={moveQuestionUpById}>
-            <button
-              type="submit"
+            <SubmitButton
+              pendingLabel="Moving..."
               disabled={!canMoveUp}
               className="min-h-11 w-full rounded-lg border px-3 py-2 text-sm disabled:opacity-50 sm:w-auto"
             >
               Move up
-            </button>
+            </SubmitButton>
           </form>
           <form action={moveQuestionDownById}>
-            <button
-              type="submit"
+            <SubmitButton
+              pendingLabel="Moving..."
               disabled={!canMoveDown}
               className="min-h-11 w-full rounded-lg border px-3 py-2 text-sm disabled:opacity-50 sm:w-auto"
             >
               Move down
-            </button>
+            </SubmitButton>
           </form>
         </div>
       </div>
@@ -171,15 +171,16 @@ export function QuestionEditor({
           >
             Save changes
           </SubmitButton>
-
-          <button
-            type="submit"
-            formAction={deleteQuestionById}
-            className="min-h-11 w-full rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 sm:w-auto"
-          >
-            Delete question
-          </button>
         </div>
+      </form>
+
+      <form action={deleteQuestionById}>
+        <SubmitButton
+          pendingLabel="Deleting..."
+          className="min-h-11 w-full rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 sm:w-auto"
+        >
+          Delete question
+        </SubmitButton>
       </form>
     </article>
   );

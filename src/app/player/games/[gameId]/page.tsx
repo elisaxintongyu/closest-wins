@@ -11,12 +11,16 @@ import { prisma } from "@/lib/prisma";
 
 export default async function PlayerGamePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ gameId: string }>;
+  searchParams: Promise<{ status?: string | string[] }>;
 }) {
   const session = await requireRole("PLAYER");
   const player = await syncDatabaseUser(session);
   const { gameId } = await params;
+  const { status } = await searchParams;
+  const joinStatus = typeof status === "string" ? status : undefined;
 
   const membership = await prisma.teamMembership.findFirst({
     where: {
@@ -171,6 +175,14 @@ export default async function PlayerGamePage({
     >
       <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-5">
+          {joinStatus === "already-joined" ? (
+            <section className="rounded-[1.75rem] border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-900 sm:p-6">
+              You already joined this game with your current account, so we
+              brought you back to your existing team page instead of creating a
+              duplicate team.
+            </section>
+          ) : null}
+
           <section className="min-w-0 rounded-[1.75rem] border border-stone-200 bg-white p-5 sm:p-6">
             <p className="text-xs font-semibold tracking-[0.18em] text-stone-500 uppercase">
               Your team

@@ -142,10 +142,14 @@ test("players cannot access another game's pages or membership-protected mutatio
   });
 
   await playerPage.goto(`/player/games/${gameTwo.id}`);
-  await expect(playerPage.getByText("This page could not be found.")).toBeVisible();
+  await expect(
+    playerPage.getByText("You do not have access to this game page.")
+  ).toBeVisible();
 
   await playerPage.goto(`/player/lobby/${gameTwo.id}`);
-  await expect(playerPage.getByText("This page could not be found.")).toBeVisible();
+  await expect(
+    playerPage.getByText("You cannot open this lobby.")
+  ).toBeVisible();
 
   const membershipProbe = await callAuthorizationProbe(playerPage, {
     intent: "player-membership",
@@ -201,7 +205,9 @@ test("admins cannot mutate another admin's game or question set by ID", async ({
   });
 
   await adminPage.goto(`/admin/games/${ownedGame.id}`);
-  await expect(adminPage.getByText("This page could not be found.")).toBeVisible();
+  await expect(
+    adminPage.getByText("This game is missing or not yours to manage.")
+  ).toBeVisible();
 
   const foreignGameProbe = await callAuthorizationProbe(adminPage, {
     intent: "admin-game",
