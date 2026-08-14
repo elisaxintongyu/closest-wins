@@ -87,3 +87,22 @@ export async function getQuestionsForGame(gameId: string) {
     },
   });
 }
+
+export async function addQuestionsToGame(
+  gameId: string,
+  questions: Array<{
+    prompt: string;
+    correctAnswer: number;
+    explanation: string;
+  }>
+) {
+  await prisma.question.createMany({
+    data: questions.map((question, index) => ({
+      gameId,
+      prompt: question.prompt,
+      correctAnswer: question.correctAnswer,
+      explanation: question.explanation,
+      order: index + 1,
+    })),
+  });
+}
