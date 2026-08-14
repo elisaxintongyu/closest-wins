@@ -39,3 +39,51 @@ export async function ensureUser(input: {
     },
   });
 }
+
+function createJoinCode() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+  return Array.from({ length: 6 }, () => {
+    const index = Math.floor(Math.random() * alphabet.length);
+    return alphabet[index];
+  }).join("");
+}
+
+export async function createGameForAdmin(input: {
+  adminEmail: string;
+  title: string;
+}) {
+  const admin = await prisma.user.findUniqueOrThrow({
+    where: { email: input.adminEmail.toLowerCase() },
+    select: { id: true },
+  });
+
+  return prisma.game.create({
+    data: {
+      title: input.title,
+      createdById: admin.id,
+      joinCode: createJoinCode(),
+    },
+    select: {
+      id: true,
+      title: true,
+      joinCode: true,
+      createdById: true,
+    },
+  });
+}
+
+export async function getQuestionsForGame(gameId: string) {
+  return prisma.question.findMany({
+    where: { gameId },
+    orderBy: { order: "asc" },
+    select: {
+      id: true,
+      prompt: true,
+      correctAnswer: true,
+      explanation: true,
+      order: true,
+      status: true,
+    },
+  });
+}
