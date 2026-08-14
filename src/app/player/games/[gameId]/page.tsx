@@ -220,6 +220,7 @@ export default async function PlayerGamePage({
           <RevealedAnswerPanel
             revealedQuestion={revealedQuestion}
             winners={revealedWinners}
+            standingsPreview={standings}
           />
         </div>
 

@@ -13,6 +13,13 @@ export type AdminGameSummary = {
     score: number;
     wins: number;
   }[];
+  latestReveal?: {
+    order: number;
+    prompt: string;
+    correctAnswer: number;
+    explanation: string | null;
+    winnerNames: string[];
+  } | null;
 };
 
 function GameSummaryCard({ game }: { game: AdminGameSummary }) {
@@ -38,6 +45,32 @@ function GameSummaryCard({ game }: { game: AdminGameSummary }) {
       </p>
 
       <div className="mt-4 space-y-2">
+        {game.latestReveal ? (
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm leading-7 text-stone-700">
+            <p className="text-xs font-semibold tracking-[0.16em] text-emerald-700 uppercase">
+              Last revealed round
+            </p>
+            <p className="mt-2 font-semibold text-stone-950">
+              Round {game.latestReveal.order}: {game.latestReveal.correctAnswer}
+            </p>
+            <p className="mt-1">{game.latestReveal.prompt}</p>
+            <p className="mt-2 text-xs font-semibold tracking-[0.16em] text-stone-500 uppercase">
+              Explanation
+            </p>
+            <p className="mt-1">
+              {game.latestReveal.explanation ?? "No explanation was added."}
+            </p>
+            <p className="mt-2 text-xs font-semibold tracking-[0.16em] text-stone-500 uppercase">
+              Winners
+            </p>
+            <p className="mt-1">
+              {game.latestReveal.winnerNames.length > 0
+                ? game.latestReveal.winnerNames.join(", ")
+                : "No winning guesses were submitted."}
+            </p>
+          </div>
+        ) : null}
+
         {game.standings.length === 0 ? (
           <p className="rounded-xl border border-dashed border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-600">
             No team scores yet.
