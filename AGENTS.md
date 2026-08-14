@@ -74,7 +74,8 @@ User management and authentication:
 Deployment:
 
 - Production deploys run on Vercel.
-- As of Wednesday, August 12, 2026, the latest known production deployment URL is `https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app`.
+- As of Friday, August 14, 2026, the stable production alias is `https://closest-wins-elisa-yus-projects.vercel.app`.
+- As of Friday, August 14, 2026, the latest immutable production deployment URL is `https://closest-wins-lxiqa5qn3-elisa-yus-projects.vercel.app`.
 
 ## Local Setup Expectations
 
@@ -111,8 +112,9 @@ The local app URL is [http://localhost:3000](http://localhost:3000).
 
 ## Deployed Site
 
-As of Sunday, August 9, 2026, the latest production deployment is:
+As of Friday, August 14, 2026:
 
-- [https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app](https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app)
+- Stable production alias: [https://closest-wins-elisa-yus-projects.vercel.app](https://closest-wins-elisa-yus-projects.vercel.app)
+- Latest immutable production deployment: [https://closest-wins-lxiqa5qn3-elisa-yus-projects.vercel.app](https://closest-wins-lxiqa5qn3-elisa-yus-projects.vercel.app)
 
-Treat that as the current deployed site unless a newer production deployment is verified.
+Treat the stable alias as the current deployed site unless a newer production alias or custom domain is verified.

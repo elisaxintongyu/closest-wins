@@ -214,11 +214,26 @@ The current E2E suite covers:
 
 ## Deployed site
 
-As of Friday, August 14, 2026, the latest documented production deployment is:
+As of Friday, August 14, 2026:
 
-- [https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app](https://closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app)
+- Stable production alias: [https://closest-wins-elisa-yus-projects.vercel.app](https://closest-wins-elisa-yus-projects.vercel.app)
+- Latest immutable production deployment: [https://closest-wins-lxiqa5qn3-elisa-yus-projects.vercel.app](https://closest-wins-lxiqa5qn3-elisa-yus-projects.vercel.app)
 
-This is the current production deployment URL, not a custom domain.
+Important deployment note:
+
+- the stable alias above is the URL that should represent current production
+- immutable `*.vercel.app` deployment URLs are snapshots and do not update after later deploys
+- the older `closest-wins-q2sb8kgoe-elisa-yus-projects.vercel.app` URL is an August 8, 2026 production snapshot, not the latest release
+
+## Production auth note
+
+Production currently uses Clerk for sign-in and sign-up, but the Vercel project also has Vercel Authentication enabled for `vercel.app` domains. That means the stable production alias and immutable deployment URLs can require a separate Vercel SSO step before the app's own Clerk flow loads fully.
+
+When debugging production auth:
+
+- verify `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` are set in Vercel production env vars
+- confirm Clerk is configured for the stable production host instead of a one-off deployment hostname
+- remember that Vercel Authentication can intercept requests to `/__clerk/*` on protected `vercel.app` domains
 
 ## E2E testing
 
