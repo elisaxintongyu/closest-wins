@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireRole, syncDatabaseUser } from "@/lib/auth-guards";
+import { findPlayerMembership, requirePlayerDatabaseUser } from "@/lib/player-access";
 import { prisma } from "@/lib/prisma";
 import {
   initialPlayerActionState,
@@ -24,37 +24,6 @@ function buildErrorState(
     message,
     fieldErrors,
   };
-}
-
-async function requirePlayerDatabaseUser() {
-  const session = await requireRole("PLAYER");
-  return syncDatabaseUser(session);
-}
-
-async function requirePlayerMembership(gameId: string, userId: string) {
-  const membership = await prisma.teamMembership.findUnique({
-    where: {
-      gameId_userId: {
-        gameId,
-        userId,
-      },
-    },
-    select: {
-      gameId: true,
-      teamId: true,
-      team: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  });
-
-  if (!membership) {
-    throw new Error("You are not part of this game.");
-  }
-
-  return membership;
 }
 
 export async function createTeam(
@@ -170,7 +139,7 @@ export async function submitGuess(
   }
 
   const player = await requirePlayerDatabaseUser();
-  const membership = await requirePlayerMembership(gameId, player.id);
+  const membership = await findPlayerMembership(gameId, player.id);
 
   const question = await prisma.question.findFirst({
     where: {

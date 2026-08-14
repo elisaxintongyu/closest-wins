@@ -4,7 +4,12 @@ import { randomBytes } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import * as XLSX from "xlsx";
-import { requireRole } from "@/lib/auth-guards";
+import {
+  findOwnedGame,
+  findOwnedQuestion,
+  findQuestionWithRoundState,
+  requireAdminDatabaseUserId,
+} from "@/lib/admin-access";
 import {
   initialActionState,
   type ActionState,
@@ -36,16 +41,6 @@ function buildErrorState(
     message,
     fieldErrors,
   };
-}
-
-async function requireAdminDatabaseUserId() {
-  const session = await requireRole("ADMIN");
-
-  if (!session.databaseUserId) {
-    throw new Error("Admin account is not linked to a database user.");
-  }
-
-  return session.databaseUserId;
 }
 
 async function generateUniqueJoinCode() {
@@ -93,24 +88,6 @@ export async function createGame(
   redirect("/admin");
 }
 
-async function requireOwnedGame(gameId: string, createdById: string) {
-  const game = await prisma.game.findFirst({
-    where: {
-      id: gameId,
-      createdById,
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  if (!game) {
-    throw new Error("Game not found.");
-  }
-
-  return game;
-}
-
 function normalizeSpreadsheetHeader(value: unknown) {
   return String(value ?? "")
     .trim()
@@ -131,59 +108,6 @@ function getCellValue(
   return "";
 }
 
-async function requireOwnedQuestion(questionId: string, createdById: string) {
-  const question = await prisma.question.findFirst({
-    where: {
-      id: questionId,
-      game: {
-        createdById,
-      },
-    },
-    select: {
-      id: true,
-      order: true,
-      gameId: true,
-    },
-  });
-
-  if (!question) {
-    throw new Error("Question not found.");
-  }
-
-  return question;
-}
-
-async function requireRoundState(
-  questionId: string,
-  createdById: string,
-  expectedStatus: "HIDDEN" | "OPEN"
-) {
-  const question = await prisma.question.findFirst({
-    where: {
-      id: questionId,
-      game: {
-        createdById,
-      },
-    },
-    select: {
-      id: true,
-      gameId: true,
-      order: true,
-      status: true,
-    },
-  });
-
-  if (!question) {
-    throw new Error("Question not found.");
-  }
-
-  if (question.status !== expectedStatus) {
-    throw new Error(`Question is not ${expectedStatus.toLowerCase()}.`);
-  }
-
-  return question;
-}
-
 export async function createQuestion(
   gameId: string,
   previousState: ActionState = initialActionState,
@@ -191,7 +115,7 @@ export async function createQuestion(
 ): Promise<ActionState> {
   void previousState;
   const createdById = await requireAdminDatabaseUserId();
-  await requireOwnedGame(gameId, createdById);
+  await findOwnedGame(gameId, createdById);
 
   const { prompt, explanation, correctAnswer, fieldErrors } =
     validateQuestionInput(formData);
@@ -233,7 +157,7 @@ export async function bulkUploadQuestions(
 ): Promise<ActionState> {
   void previousState;
   const createdById = await requireAdminDatabaseUserId();
-  await requireOwnedGame(gameId, createdById);
+  await findOwnedGame(gameId, createdById);
 
   const upload = formData.get("questionFile");
 
@@ -342,7 +266,7 @@ export async function updateQuestion(
 ): Promise<ActionState> {
   void previousState;
   const createdById = await requireAdminDatabaseUserId();
-  const question = await requireOwnedQuestion(questionId, createdById);
+  const question = await findOwnedQuestion(questionId, createdById);
 
   const { prompt, explanation, correctAnswer, fieldErrors } =
     validateQuestionInput(formData);
@@ -373,7 +297,7 @@ export async function updateQuestion(
 
 export async function deleteQuestion(questionId: string) {
   const createdById = await requireAdminDatabaseUserId();
-  const question = await requireOwnedQuestion(questionId, createdById);
+  const question = await findOwnedQuestion(questionId, createdById);
 
   await prisma.$transaction(async (tx) => {
     await tx.question.delete({
@@ -400,7 +324,7 @@ export async function deleteQuestion(questionId: string) {
 
 async function moveQuestion(questionId: string, direction: "up" | "down") {
   const createdById = await requireAdminDatabaseUserId();
-  const question = await requireOwnedQuestion(questionId, createdById);
+  const question = await findOwnedQuestion(questionId, createdById);
   const targetOrder =
     direction === "up" ? question.order - 1 : question.order + 1;
 
@@ -453,7 +377,11 @@ export async function moveQuestionDown(questionId: string) {
 
 export async function openQuestionRound(questionId: string) {
   const createdById = await requireAdminDatabaseUserId();
-  const question = await requireRoundState(questionId, createdById, "HIDDEN");
+  const question = await findQuestionWithRoundState(
+    questionId,
+    createdById,
+    "HIDDEN"
+  );
 
   const existingOpenQuestion = await prisma.question.findFirst({
     where: {
@@ -495,7 +423,11 @@ export async function openQuestionRound(questionId: string) {
 
 export async function closeQuestionRound(questionId: string) {
   const createdById = await requireAdminDatabaseUserId();
-  const question = await requireRoundState(questionId, createdById, "OPEN");
+  const question = await findQuestionWithRoundState(
+    questionId,
+    createdById,
+    "OPEN"
+  );
 
   await prisma.question.update({
     where: {
