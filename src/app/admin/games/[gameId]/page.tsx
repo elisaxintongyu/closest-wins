@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BulkQuestionUploadForm } from "@/components/admin/bulk-question-upload-form";
 import { CreateQuestionForm } from "@/components/admin/create-question-form";
 import { QuestionEditor } from "@/components/admin/question-editor";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
@@ -121,15 +122,40 @@ export default async function AdminGamePage({
         <section className="space-y-4">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold text-stone-950">
-              Add a question
+              Add questions
             </h2>
             <p className="text-sm leading-7 text-stone-700">
-              New questions are appended to the bottom of the set and can then
-              be moved into place.
+              Add one question at a time or bulk upload a spreadsheet. New
+              questions are appended to the bottom of the set and can then be
+              moved into place.
             </p>
           </div>
 
-          <CreateQuestionForm gameId={game.id} />
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <h3 className="text-lg font-semibold text-stone-950">
+                  Single question
+                </h3>
+                <p className="text-sm text-stone-700">
+                  Use the form below for one-off additions.
+                </p>
+              </div>
+              <CreateQuestionForm gameId={game.id} />
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <h3 className="text-lg font-semibold text-stone-950">
+                  Bulk upload
+                </h3>
+                <p className="text-sm text-stone-700">
+                  Import multiple rows from an Excel sheet in one pass.
+                </p>
+              </div>
+              <BulkQuestionUploadForm gameId={game.id} />
+            </div>
+          </div>
         </section>
 
         <section className="space-y-4">
