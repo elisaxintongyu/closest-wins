@@ -224,7 +224,7 @@ export default async function PlayerGamePage({
           <div className="mt-5 flex flex-wrap gap-3">
             <Link
               href={`/player/lobby/${membership.game.id}`}
-              className="inline-flex items-center justify-center rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-amber-50 transition hover:bg-stone-800"
+              className="inline-flex items-center justify-center rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
             >
               Open lobby
             </Link>

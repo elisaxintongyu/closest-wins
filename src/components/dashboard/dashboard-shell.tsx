@@ -9,6 +9,8 @@ type DashboardShellProps = {
   userName: string;
   roleLabel: string;
   highlights: string[];
+  sidebarTitle?: string;
+  sidebarContent?: ReactNode;
   children?: ReactNode;
 };
 
@@ -19,6 +21,8 @@ export function DashboardShell({
   userName,
   roleLabel,
   highlights,
+  sidebarTitle = "This milestone proves",
+  sidebarContent,
   children,
 }: DashboardShellProps) {
   return (
@@ -64,18 +68,22 @@ export function DashboardShell({
 
           <aside className="rounded-[2rem] border border-stone-900/10 bg-stone-50/90 p-8 shadow-[0_24px_80px_rgba(120,53,15,0.08)]">
             <p className="text-sm font-semibold tracking-[0.24em] text-stone-500 uppercase">
-              This milestone proves
+              {sidebarTitle}
             </p>
-            <ul className="mt-6 space-y-4 text-sm leading-7 text-stone-700">
-              {highlights.map((highlight) => (
-                <li
-                  key={highlight}
-                  className="rounded-2xl border border-stone-900/10 bg-white px-4 py-3"
-                >
-                  {highlight}
-                </li>
-              ))}
-            </ul>
+            {sidebarContent ? (
+              <div className="mt-6">{sidebarContent}</div>
+            ) : (
+              <ul className="mt-6 space-y-4 text-sm leading-7 text-stone-700">
+                {highlights.map((highlight) => (
+                  <li
+                    key={highlight}
+                    className="rounded-2xl border border-stone-900/10 bg-white px-4 py-3"
+                  >
+                    {highlight}
+                  </li>
+                ))}
+              </ul>
+            )}
           </aside>
         </section>
       </div>

@@ -42,7 +42,7 @@ export default function Home() {
               <SignUpButton mode="redirect">
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-amber-50 transition hover:bg-stone-800"
+                  className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-stone-800"
                 >
                   Create account
                 </button>
@@ -51,7 +51,7 @@ export default function Home() {
             <Show when="signed-in">
               <Link
                 href="/dashboard"
-                className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-amber-50 transition hover:bg-stone-800"
+                className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-stone-800"
               >
                 Open dashboard
               </Link>
