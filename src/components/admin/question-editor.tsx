@@ -167,6 +167,7 @@ export function QuestionEditor({
           <SubmitButton
             pendingLabel="Saving..."
             className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+            style={{ color: "#fff" }}
           >
             Save changes
           </SubmitButton>

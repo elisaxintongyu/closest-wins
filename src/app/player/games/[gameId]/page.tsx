@@ -158,9 +158,11 @@ export default async function PlayerGamePage({
     <DashboardShell
       eyebrow="Player game"
       title={membership.game.title}
-      description="This is your team’s dedicated game home. Use it to keep your place in the game and jump into the live lobby whenever you need it."
+      description="Track your team, submit guesses, and jump to the lobby when you need it."
       userName={session.userName}
       roleLabel="Player"
+      homeHref="/player"
+      homeLabel="Player page"
       highlights={[
         `Team: ${membership.team.name}`,
         `Teams in game: ${membership.game._count.teams}`,
@@ -177,9 +179,8 @@ export default async function PlayerGamePage({
               {membership.team.name}
             </h2>
             <p className="mt-3 max-w-2xl text-base leading-8 text-stone-700">
-              You&apos;re registered for this game and ready for the next
-              gameplay steps. This page gives players a stable home separate
-              from the live lobby view.
+              Your team is checked in for this game. Use this page to watch the
+              current round, submit a guess, and keep an eye on the standings.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <div className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-700">
@@ -225,6 +226,7 @@ export default async function PlayerGamePage({
             <Link
               href={`/player/lobby/${membership.game.id}`}
               className="inline-flex items-center justify-center rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
+              style={{ color: "#fff" }}
             >
               Open lobby
             </Link>
@@ -232,7 +234,7 @@ export default async function PlayerGamePage({
               href="/player"
               className="inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white px-4 py-2 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
             >
-              Back to dashboard
+              Back to player page
             </Link>
           </div>
 

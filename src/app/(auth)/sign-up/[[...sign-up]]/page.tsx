@@ -17,8 +17,8 @@ export default function SignUpPage() {
             Register a player account in a few seconds.
           </h1>
           <p className="max-w-xl text-base leading-7 text-stone-700">
-            This route now uses Clerk to handle registration, verification, and
-            session creation for the app.
+            Create an account, finish verification if needed, and head straight
+            into the player flow.
           </p>
         </div>
         <div className="rounded-[1.5rem] border border-stone-900/10 bg-stone-50 p-5">

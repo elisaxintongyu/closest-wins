@@ -139,9 +139,11 @@ export default async function PlayerLobbyPage({
     <DashboardShell
       eyebrow="Game lobby"
       title={membership.game.title}
-      description="Your team is in the lobby. This page is the shared waiting room while the host gets the game ready."
+      description="See who has joined and wait here for the next round to open."
       userName={session.userName}
       roleLabel="Player"
+      homeHref="/player"
+      homeLabel="Player page"
       highlights={[
         `Team: ${membership.team.name}`,
         `Join code: ${membership.game.joinCode}`,
@@ -199,7 +201,7 @@ export default async function PlayerLobbyPage({
             href="/player"
             className="mt-5 inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white px-4 py-2 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
           >
-            Back to player dashboard
+            Back to player page
           </Link>
         </section>
       </div>

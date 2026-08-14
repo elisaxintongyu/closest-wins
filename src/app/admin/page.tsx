@@ -77,8 +77,8 @@ export default async function AdminPage() {
   return (
     <DashboardShell
       eyebrow="Admin dashboard"
-      title="Create and manage game sessions."
-      description="Admins can now create persistent game records with unique join codes from the protected dashboard."
+      title="Admin page"
+      description="Create games, manage questions, and keep track of current sessions."
       userName={session.userName}
       roleLabel="Administrator"
       sidebarTitle="Game history"
@@ -88,11 +88,7 @@ export default async function AdminPage() {
           completedGames={completedGames}
         />
       }
-      highlights={[
-        "Game sessions are stored in PostgreSQL through Prisma",
-        "Each game gets a unique join code generated on the server",
-        "The dashboard now shows the games created by this admin",
-      ]}
+      highlights={[]}
     >
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <section className="space-y-4">
@@ -182,6 +178,7 @@ export default async function AdminPage() {
                     <Link
                       href={`/admin/games/${game.id}`}
                       className="mt-4 inline-flex items-center justify-center rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
+                      style={{ color: "#fff" }}
                     >
                       Manage questions
                     </Link>

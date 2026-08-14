@@ -10,12 +10,14 @@ const demoUsers = [
     name: "Closest Wins Admin",
     role: "ADMIN",
     label: "Continue as demo admin",
+    redirectTo: "/admin",
   },
   {
     email: "user@closestwins.com",
     name: "Demo User",
     role: "PLAYER",
     label: "Continue as demo player",
+    redirectTo: "/player",
   },
 ] as const;
 
@@ -42,7 +44,7 @@ export function TestAuthPanel({ mode }: TestAuthPanelProps) {
             <input type="hidden" name="email" value={user.email} />
             <input type="hidden" name="name" value={user.name} />
             <input type="hidden" name="role" value={user.role} />
-            <input type="hidden" name="redirectTo" value="/dashboard" />
+            <input type="hidden" name="redirectTo" value={user.redirectTo} />
             <button
               type="submit"
               className="flex w-full items-center justify-between rounded-2xl border border-stone-200 bg-white px-4 py-4 text-left transition hover:border-stone-300 hover:bg-stone-50"
@@ -81,7 +83,7 @@ export function TestAuthPanel({ mode }: TestAuthPanelProps) {
       ) : (
         <form action="/api/test/session" method="post" className="space-y-4">
           <input type="hidden" name="role" value="PLAYER" />
-          <input type="hidden" name="redirectTo" value="/dashboard" />
+          <input type="hidden" name="redirectTo" value="/player" />
 
           <div className="space-y-2">
             <label
@@ -120,6 +122,7 @@ export function TestAuthPanel({ mode }: TestAuthPanelProps) {
           <button
             type="submit"
             className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800"
+            style={{ color: "#fff" }}
           >
             Create player test account
           </button>

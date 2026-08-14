@@ -12,6 +12,8 @@ type DashboardShellProps = {
   highlights: string[];
   sidebarTitle?: string;
   sidebarContent?: ReactNode;
+  homeHref?: string;
+  homeLabel?: string;
   children?: ReactNode;
 };
 
@@ -22,8 +24,10 @@ export function DashboardShell({
   userName,
   roleLabel,
   highlights,
-  sidebarTitle = "This milestone proves",
+  sidebarTitle = "Overview",
   sidebarContent,
+  homeHref,
+  homeLabel,
   children,
 }: DashboardShellProps) {
   const showTestSignOut = isE2ETestModeEnabled();
@@ -41,12 +45,14 @@ export function DashboardShell({
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white px-4 py-2 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
-            >
-              Back home
-            </Link>
+            {homeHref && homeLabel ? (
+              <Link
+                href={homeHref}
+                className="inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white px-4 py-2 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
+              >
+                {homeLabel}
+              </Link>
+            ) : null}
             <div className="inline-flex items-center rounded-full border border-stone-900/10 bg-white px-3 py-2">
               {showTestSignOut ? (
                 <form action="/api/test/session" method="post">
@@ -68,9 +74,6 @@ export function DashboardShell({
         <section className="grid flex-1 gap-8 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-6 rounded-[2rem] border border-stone-900/10 bg-white/80 p-8 shadow-[0_24px_80px_rgba(120,53,15,0.12)] backdrop-blur">
             <div className="space-y-4">
-              <p className="text-sm font-semibold tracking-[0.24em] text-stone-500 uppercase">
-                Access granted
-              </p>
               <h1 className="text-4xl font-semibold tracking-[-0.04em] text-stone-950 sm:text-5xl">
                 {title}
               </h1>
