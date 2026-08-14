@@ -167,6 +167,39 @@ To apply formatting changes:
 npm run format
 ```
 
+## E2E testing
+
+This repo uses Playwright for end-to-end browser coverage.
+
+1. Install browser binaries the first time:
+
+```bash
+npx playwright install chromium
+```
+
+2. Make sure your local `.env` is configured with the same Neon and Clerk values required for `npm run dev`.
+
+3. Run the E2E suite:
+
+```bash
+npm run test:e2e
+```
+
+Useful variants:
+
+```bash
+npm run test:e2e:headed
+npm run test:e2e:ui
+npm run test:e2e:debug
+npm run test:e2e:report
+```
+
+Notes:
+
+- The Playwright config starts the Next.js dev server automatically on `http://127.0.0.1:3000`
+- The initial smoke test covers the public landing page, so it does not require seeding or signing in
+- Protected-route E2E coverage can be added later once we decide on a stable Clerk test-auth strategy
+
 ## Database scripts
 
 - `npm run prisma:generate` regenerates the Prisma client
