@@ -26,6 +26,7 @@
     "db:seed": "prisma db seed",
     "db:seed-user": "tsx prisma/seed-user.ts",
     "db:make-admin": "tsx prisma/make-admin.ts",
+    "db:cleanup:testdata": "tsx scripts/cleanup-test-data.ts",
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",
     "docker:up": "docker compose up --build",

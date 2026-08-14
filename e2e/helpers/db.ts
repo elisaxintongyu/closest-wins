@@ -15,6 +15,104 @@ if (!globalForE2EPrisma.e2ePrisma) {
 
 export { prisma };
 
+const TEST_EMAILS = new Set([
+  "admin@closestwins.com",
+  "player@closestwins.com",
+  "user@closestwins.com",
+  "player.one@closestwins.com",
+  "player.two@closestwins.com",
+  "admin.one@closestwins.com",
+  "admin.two@closestwins.com",
+  "empty-admin@closestwins.com",
+  "empty-player@closestwins.com",
+  "other-player@closestwins.com",
+  "captain@closestwins.com",
+  "teammate@closestwins.com",
+  "late-player@closestwins.com",
+]);
+
+const TEST_EMAIL_PREFIXES = ["player+", "empty-admin+"];
+
+const TEST_GAME_TITLE_PREFIXES = [
+  "Milestone 6 ",
+  "Single round flow ",
+  "Multi round flow ",
+  "Game control flow ",
+  "Auth game one ",
+  "Auth game two ",
+  "Foreign admin game ",
+  "Empty admin game ",
+  "Duplicate team game ",
+  "Preset team game ",
+  "Player error states ",
+];
+
+const TEST_GAME_TITLES = new Set([
+  "Closest Wins Demo Game (10 Questions)",
+  "HackNight Round 1",
+  "Hacknight Round 1",
+]);
+
+function isTestEmail(email: string) {
+  const normalizedEmail = email.toLowerCase();
+
+  return (
+    TEST_EMAILS.has(normalizedEmail) ||
+    TEST_EMAIL_PREFIXES.some((prefix) => normalizedEmail.startsWith(prefix))
+  );
+}
+
+function isTestGameTitle(title: string) {
+  return (
+    TEST_GAME_TITLES.has(title) ||
+    TEST_GAME_TITLE_PREFIXES.some((prefix) => title.startsWith(prefix))
+  );
+}
+
+export async function cleanupE2ETestData() {
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      email: true,
+    },
+  });
+  const games = await prisma.game.findMany({
+    select: {
+      id: true,
+      title: true,
+    },
+  });
+
+  const userIdsToDelete = users
+    .filter((user) => isTestEmail(user.email))
+    .map((user) => user.id);
+  const gameIdsToDelete = games
+    .filter((game) => isTestGameTitle(game.title))
+    .map((game) => game.id);
+
+  await prisma.$transaction([
+    prisma.game.deleteMany({
+      where: {
+        id: {
+          in: gameIdsToDelete,
+        },
+      },
+    }),
+    prisma.user.deleteMany({
+      where: {
+        id: {
+          in: userIdsToDelete,
+        },
+      },
+    }),
+  ]);
+
+  return {
+    deletedGames: gameIdsToDelete.length,
+    deletedUsers: userIdsToDelete.length,
+  };
+}
+
 export async function ensureUser(input: {
   email: string;
   name: string;
