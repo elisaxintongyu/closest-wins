@@ -10,13 +10,13 @@ test("landing page shows the public product messaging", async ({ page }) => {
   ).toBeVisible();
 
   await expect(
-    page.getByRole("button", {
+    page.getByRole("link", {
       name: "Sign in",
     })
   ).toBeVisible();
 
   await expect(
-    page.getByRole("button", {
+    page.getByRole("link", {
       name: "Create account",
     })
   ).toBeVisible();

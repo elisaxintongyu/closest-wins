@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
+import { getOptionalSession } from "@/lib/auth-guards";
+import { isE2ETestModeEnabled } from "@/lib/test-mode";
 
 const demoAccounts = [
   {
@@ -14,7 +16,11 @@ const demoAccounts = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const session = await getOptionalSession();
+  const isSignedIn = Boolean(session);
+  const showTestSignOut = isSignedIn && isE2ETestModeEnabled();
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.8),_transparent_30%),linear-gradient(135deg,_#fff7ed_0%,_#fde68a_45%,_#fca5a5_100%)] px-6 py-12 text-stone-950">
       <div className="absolute inset-y-0 right-[-12%] hidden w-[42rem] rotate-[18deg] rounded-[4rem] border border-white/50 bg-white/20 blur-3xl lg:block" />
@@ -30,25 +36,8 @@ export default function Home() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Show when="signed-out">
-              <SignInButton mode="redirect">
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white/80 px-5 py-2.5 text-sm font-semibold text-stone-900 transition hover:bg-white"
-                >
-                  Sign in
-                </button>
-              </SignInButton>
-              <SignUpButton mode="redirect">
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-stone-800"
-                >
-                  Create account
-                </button>
-              </SignUpButton>
-            </Show>
-            <Show when="signed-in">
+            {isSignedIn ? (
+              <>
               <Link
                 href="/dashboard"
                 className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-stone-800"
@@ -59,9 +48,37 @@ export default function Home() {
                 <span className="text-sm font-medium text-stone-700">
                   Signed in
                 </span>
-                <UserButton />
+                {showTestSignOut ? (
+                  <form action="/api/test/session" method="post" className="flex">
+                    <input type="hidden" name="intent" value="sign-out" />
+                    <button
+                      type="submit"
+                      className="rounded-full border border-stone-200 bg-white px-3 py-1 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
+                    >
+                      Sign out
+                    </button>
+                  </form>
+                ) : (
+                  <UserButton />
+                )}
               </div>
-            </Show>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/sign-in"
+                  className="inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-white/80 px-5 py-2.5 text-sm font-semibold text-stone-900 transition hover:bg-white"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-stone-800"
+                >
+                  Create account
+                </Link>
+              </>
+            )}
           </div>
         </header>
 
