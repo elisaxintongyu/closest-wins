@@ -6,20 +6,21 @@ import {
   createGameForAdmin,
   createTeamForPlayer,
   ensureUser,
-  prisma,
 } from "./helpers/db";
 
 test("admin empty states and validation errors are visible where the admin works", async ({
   page,
 }) => {
+  const adminEmail = `empty-admin+${Date.now()}@closestwins.com`;
+
   await ensureUser({
-    email: "empty-admin@closestwins.com",
+    email: adminEmail,
     name: "Empty Admin",
     role: "ADMIN",
   });
 
   await signInWithSession(page, {
-    email: "empty-admin@closestwins.com",
+    email: adminEmail,
     name: "Empty Admin",
     role: "ADMIN",
   });
@@ -33,7 +34,7 @@ test("admin empty states and validation errors are visible where the admin works
   await expect(page.getByText("Game title is required.")).toBeVisible();
 
   const emptyGame = await createGameForAdmin({
-    adminEmail: "empty-admin@closestwins.com",
+    adminEmail,
     title: `Empty admin game ${Date.now()}`,
   });
 

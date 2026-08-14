@@ -36,6 +36,7 @@ Prefer updating the existing stack over creating parallel overlapping branches.
 
 Before submitting or merging:
 
+- Run `npm run env:check` before local verification when env-sensitive flows changed
 - Run `npm run lint`
 - Run `npm run typecheck`
 - Run `npm run format:check` when formatting-sensitive files changed
@@ -83,6 +84,8 @@ Agents should assume local development typically requires:
 - `DIRECT_URL`
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
 - `CLERK_SECRET_KEY`
+
+Use `npm run env:check` to verify the local set before debugging auth or Prisma failures.
 
 For this repository:
 

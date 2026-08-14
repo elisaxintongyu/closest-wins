@@ -146,6 +146,9 @@ test("admin can bulk upload valid spreadsheets and sees invalid or empty upload 
 
   await page.goto(`/admin/games/${game.id}`);
 
+  await page.getByRole("button", { name: "Upload spreadsheet" }).click();
+  await expect(page.getByText("Choose a spreadsheet file to upload.")).toBeVisible();
+
   await page.getByLabel("Excel file").setInputFiles(
     path.join(process.cwd(), "e2e/fixtures/questions-valid.csv")
   );
@@ -165,6 +168,129 @@ test("admin can bulk upload valid spreadsheets and sees invalid or empty upload 
   );
   await page.getByRole("button", { name: "Upload spreadsheet" }).click();
   await expect(page.getByText("The spreadsheet is empty.")).toBeVisible();
+});
+
+test("bulk upload appends questions in order and accepts alternate spreadsheet headers", async ({
+  page,
+}) => {
+  await ensureUser({
+    email: "admin@closestwins.com",
+    name: "Closest Wins Admin",
+    role: "ADMIN",
+  });
+
+  const game = await createGameForAdmin({
+    adminEmail: "admin@closestwins.com",
+    title: `Milestone 6 Upload Headers ${Date.now()}`,
+  });
+
+  await prisma.question.create({
+    data: {
+      gameId: game.id,
+      prompt: "Existing first question",
+      correctAnswer: 1,
+      explanation: "This question should stay at the top.",
+      order: 1,
+    },
+  });
+
+  await signInWithSession(page, {
+    email: "admin@closestwins.com",
+    name: "Closest Wins Admin",
+    role: "ADMIN",
+  });
+
+  await page.goto(`/admin/games/${game.id}`);
+  await page.getByLabel("Excel file").setInputFiles(
+    path.join(process.cwd(), "e2e/fixtures/questions-alternate-headers.csv")
+  );
+  await page.getByRole("button", { name: "Upload spreadsheet" }).click();
+  await expect(page.getByText("Uploaded 2 questions.")).toBeVisible();
+
+  await expect
+    .poll(async () => {
+      const questions = await getQuestionsForGame(game.id);
+      return questions.map((question) => ({
+        prompt: question.prompt,
+        order: question.order,
+      }));
+    })
+    .toEqual([
+      { prompt: "Existing first question", order: 1 },
+      { prompt: "How many sides are on a hexagon?", order: 2 },
+      { prompt: "How many days are in a week?", order: 3 },
+    ]);
+});
+
+test("admin sees inline validation errors when editing a question with oversized fields", async ({
+  page,
+}) => {
+  await ensureUser({
+    email: "admin@closestwins.com",
+    name: "Closest Wins Admin",
+    role: "ADMIN",
+  });
+
+  const game = await createGameForAdmin({
+    adminEmail: "admin@closestwins.com",
+    title: `Milestone 6 Edit Validation ${Date.now()}`,
+  });
+
+  const question = await prisma.question.create({
+    data: {
+      gameId: game.id,
+      prompt: "Original prompt",
+      correctAnswer: 42,
+      explanation: "Original explanation",
+      order: 1,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  await signInWithSession(page, {
+    email: "admin@closestwins.com",
+    name: "Closest Wins Admin",
+    role: "ADMIN",
+  });
+
+  await page.goto(`/admin/games/${game.id}`);
+
+  const questionCard = page.locator("article").filter({
+    hasText: "Question 1",
+  });
+
+  await questionCard.getByLabel("Prompt").fill("P".repeat(501));
+  await questionCard.getByLabel("Correct answer").fill("42");
+  await questionCard.getByLabel("Explanation").fill("E".repeat(2001));
+  await questionCard.getByRole("button", { name: "Save changes" }).click();
+
+  await expect(
+    questionCard.getByText("Question prompt must be 500 characters or fewer.")
+  ).toBeVisible();
+  await expect(
+    questionCard.getByText("Explanation must be 2000 characters or fewer.")
+  ).toBeVisible();
+
+  await expect
+    .poll(async () => {
+      const persistedQuestion = await prisma.question.findUniqueOrThrow({
+        where: { id: question.id },
+        select: {
+          prompt: true,
+          correctAnswer: true,
+          explanation: true,
+        },
+      });
+
+      return persistedQuestion;
+    })
+    .toEqual({
+      prompt: "Original prompt",
+      correctAnswer: 42,
+      explanation: "Original explanation",
+    });
 });
 
 test("non-admin users are redirected away from admin question management", async ({
