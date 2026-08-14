@@ -113,7 +113,7 @@ export default async function AdminPage() {
       }
       highlights={[]}
     >
-      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-8">
+      <div className="space-y-8">
         <section className="space-y-4">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold text-stone-950">
