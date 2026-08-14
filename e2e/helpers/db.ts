@@ -107,6 +107,22 @@ export async function addQuestionsToGame(
   });
 }
 
+export async function createPresetTeamForGame(input: {
+  gameId: string;
+  teamName: string;
+}) {
+  return prisma.team.create({
+    data: {
+      gameId: input.gameId,
+      name: input.teamName,
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+}
+
 export async function createTeamForPlayer(input: {
   gameId: string;
   userEmail: string;

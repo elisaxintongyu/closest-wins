@@ -170,6 +170,36 @@ test("admin can bulk upload valid spreadsheets and sees invalid or empty upload 
   await expect(page.getByText("The spreadsheet is empty.")).toBeVisible();
 });
 
+test("admin can add and remove preset teams for a game before players join", async ({
+  page,
+}) => {
+  await ensureUser({
+    email: "admin@closestwins.com",
+    name: "Closest Wins Admin",
+    role: "ADMIN",
+  });
+
+  const game = await createGameForAdmin({
+    adminEmail: "admin@closestwins.com",
+    title: `Milestone 6 Preset Teams ${Date.now()}`,
+  });
+
+  await signInWithSession(page, {
+    email: "admin@closestwins.com",
+    name: "Closest Wins Admin",
+    role: "ADMIN",
+  });
+
+  await page.goto(`/admin/games/${game.id}`);
+  await page.getByLabel("Team name").fill("Frontend Falcons");
+  await page.getByRole("button", { name: "Add preset team" }).click();
+  await expect(page.getByText("Preset team created.")).toBeVisible();
+  await expect(page.getByText("Frontend Falcons")).toBeVisible();
+
+  await page.getByRole("button", { name: "Remove team" }).click();
+  await expect(page.getByText("Frontend Falcons")).toHaveCount(0);
+});
+
 test("bulk upload appends questions in order and accepts alternate spreadsheet headers", async ({
   page,
 }) => {

@@ -12,14 +12,21 @@ import { initialPlayerActionState } from "@/lib/player-validation";
 export function CreateTeamForm({
   joinCode,
   gameTitle,
+  presetTeams,
 }: {
   joinCode?: string;
   gameTitle?: string;
+  presetTeams: Array<{
+    id: string;
+    name: string;
+    memberCount: number;
+  }>;
 }) {
   const [state, formAction] = useActionState(
     createTeam,
     initialPlayerActionState
   );
+  const canJoin = Boolean(joinCode) && presetTeams.length > 0;
 
   return (
     <form
@@ -59,32 +66,48 @@ export function CreateTeamForm({
         </div>
       )}
 
-      <div className="space-y-2">
-        <label
-          htmlFor="team-name"
-          className="text-sm font-semibold tracking-[0.12em] text-stone-700 uppercase"
-        >
-          Team name
-        </label>
-        <input
-          id="team-name"
-          name="teamName"
-          type="text"
-          maxLength={40}
-          placeholder="Closest Crew"
-          className="w-full rounded-2xl border border-stone-300 px-4 py-3 text-base"
-        />
-        <PlayerFieldErrors state={state} field="teamName" />
-      </div>
+      {canJoin ? (
+        <div className="space-y-2">
+          <label
+            htmlFor="team-id"
+            className="text-sm font-semibold tracking-[0.12em] text-stone-700 uppercase"
+          >
+            Available teams
+          </label>
+          <select
+            id="team-id"
+            name="teamId"
+            defaultValue=""
+            className="w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 text-base"
+          >
+            <option value="" disabled>
+              Select a preset team
+            </option>
+            {presetTeams.map((team) => (
+              <option key={team.id} value={team.id}>
+                {team.name}
+              </option>
+            ))}
+          </select>
+          <PlayerFieldErrors state={state} field="teamId" />
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50 px-4 py-3 text-sm leading-7 text-stone-600">
+          {joinCode
+            ? "The host has not added any preset teams yet. Ask them to add team names before you join."
+            : "Enter a valid join code above to load the host's preset team list."}
+        </div>
+      )}
 
       <PlayerFormMessage state={state} />
 
       <SubmitButton
-        pendingLabel="Creating team..."
+        pendingLabel="Joining team..."
+        disabled={!canJoin}
         className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 sm:w-auto"
         style={{ color: "#fff" }}
       >
-        Create team
+        Join team
       </SubmitButton>
     </form>
   );

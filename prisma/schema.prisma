@@ -65,10 +65,10 @@ model Game {
 model Team {
   id          String           @id @default(cuid())
   gameId      String
-  captainId   String
+  captainId   String?
   name        String
   game        Game             @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  captain     User             @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: Restrict)
+  captain     User?            @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: Restrict)
   memberships TeamMembership[]
   guesses     Guess[]
   createdAt   DateTime         @default(now())

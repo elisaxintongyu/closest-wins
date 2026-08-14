@@ -4,6 +4,7 @@ import { signInWithSession } from "./helpers/auth";
 import {
   addQuestionsToGame,
   createGameForAdmin,
+  createPresetTeamForGame,
   ensureUser,
   prisma,
 } from "./helpers/db";
@@ -11,8 +12,8 @@ import {
 async function joinGame(page: Page, joinCode: string, teamName: string) {
   await page.goto(`/player?joinCode=${joinCode}`);
   await expect(page.getByText("Game found")).toBeVisible();
-  await page.getByLabel("Team name").fill(teamName);
-  await page.getByRole("button", { name: "Create team" }).click();
+  await page.getByLabel("Available teams").selectOption({ label: teamName });
+  await page.getByRole("button", { name: "Join team" }).click();
   await page.waitForURL(new RegExp(`/player/games/.+`));
 }
 
@@ -47,6 +48,10 @@ test("single-round gameplay flows from join to reveal and completion", async ({
       explanation: "One hour contains 60 minutes.",
     },
   ]);
+  await createPresetTeamForGame({
+    gameId: game.id,
+    teamName: "Alpha Team",
+  });
 
   const adminContext = await browser.newContext();
   const playerContext = await browser.newContext();
@@ -212,6 +217,14 @@ test("multi-round gameplay handles ties and ends with a completed scoreboard", a
       explanation: "Most calendar years contain 52 weeks.",
     },
   ]);
+  await createPresetTeamForGame({
+    gameId: game.id,
+    teamName: "Alpha Team",
+  });
+  await createPresetTeamForGame({
+    gameId: game.id,
+    teamName: "Beta Team",
+  });
 
   const adminContext = await browser.newContext();
   const playerOneContext = await browser.newContext();
@@ -466,6 +479,10 @@ test("admin can explicitly end and reset a game session", async ({
       explanation: "A day contains 24 hours.",
     },
   ]);
+  await createPresetTeamForGame({
+    gameId: game.id,
+    teamName: "Alpha Team",
+  });
 
   const adminContext = await browser.newContext();
   const playerContext = await browser.newContext();

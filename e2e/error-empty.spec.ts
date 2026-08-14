@@ -4,6 +4,7 @@ import {
   addPlayerToTeam,
   addQuestionsToGame,
   createGameForAdmin,
+  createPresetTeamForGame,
   createTeamForPlayer,
   ensureUser,
 } from "./helpers/db";
@@ -48,7 +49,7 @@ test("admin empty states and validation errors are visible where the admin works
   ).toBeVisible();
 });
 
-test("player empty states, invalid join codes, and duplicate team names are visible", async ({
+test("player empty states, invalid join codes, and preset team requirements are visible", async ({
   page,
 }) => {
   await ensureUser({
@@ -61,12 +62,6 @@ test("player empty states, invalid join codes, and duplicate team names are visi
     name: "Closest Wins Admin",
     role: "ADMIN",
   });
-  await ensureUser({
-    email: "other-player@closestwins.com",
-    name: "Other Player",
-    role: "PLAYER",
-  });
-
   await signInWithSession(page, {
     email: "empty-player@closestwins.com",
     name: "Empty Player",
@@ -83,21 +78,30 @@ test("player empty states, invalid join codes, and duplicate team names are visi
 
   const game = await createGameForAdmin({
     adminEmail: "admin@closestwins.com",
-    title: `Duplicate team game ${Date.now()}`,
+    title: `Preset team game ${Date.now()}`,
   });
-  await createTeamForPlayer({
+
+  await page.goto(`/player?joinCode=${game.joinCode}`);
+  await expect(
+    page.getByText(
+      "The host has not added any preset teams yet. Ask them to add team names before you join."
+    )
+  ).toBeVisible();
+
+  const presetTeam = await createPresetTeamForGame({
     gameId: game.id,
-    userEmail: "other-player@closestwins.com",
     teamName: "Shared Team",
   });
 
   await page.goto(`/player?joinCode=${game.joinCode}`);
-  await page.getByLabel("Team name").fill("Shared Team");
-  await page.getByRole("button", { name: "Create team" }).click();
-
+  await page.getByRole("button", { name: "Join team" }).click();
   await expect(
-    page.getByText("That team name is already taken in this game.")
+    page.getByText("Choose one of the host's preset teams.")
   ).toBeVisible();
+
+  await page.getByLabel("Available teams").selectOption(presetTeam.id);
+  await page.getByRole("button", { name: "Join team" }).click();
+  await page.waitForURL(new RegExp(`/player/games/${game.id}`));
 });
 
 test("player pages show waiting, duplicate-guess, and round-closed error states", async ({

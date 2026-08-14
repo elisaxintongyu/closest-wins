@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { BulkQuestionUploadForm } from "@/components/admin/bulk-question-upload-form";
 import { CreateQuestionForm } from "@/components/admin/create-question-form";
 import { GameSessionControls } from "@/components/admin/game-session-controls";
+import { PresetTeamManager } from "@/components/admin/preset-team-manager";
 import { QuestionEditor } from "@/components/admin/question-editor";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { requireRole } from "@/lib/auth-guards";
@@ -60,6 +61,27 @@ export default async function AdminGamePage({
                   name: true,
                 },
               },
+            },
+          },
+        },
+      },
+      teams: {
+        orderBy: {
+          createdAt: "asc",
+        },
+        select: {
+          id: true,
+          name: true,
+          captain: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+          _count: {
+            select: {
+              memberships: true,
+              guesses: true,
             },
           },
         },
@@ -144,6 +166,17 @@ export default async function AdminGamePage({
         </section>
 
         <GameSessionControls gameId={game.id} gameStatus={game.status} />
+
+        <PresetTeamManager
+          gameId={game.id}
+          teams={game.teams.map((team) => ({
+            id: team.id,
+            name: team.name,
+            captainName: team.captain?.name ?? team.captain?.email ?? null,
+            memberCount: team._count.memberships,
+            guessCount: team._count.guesses,
+          }))}
+        />
 
         <section className="space-y-4">
           <div className="space-y-2">
