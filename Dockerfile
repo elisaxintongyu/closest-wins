@@ -7,7 +7,7 @@ RUN apt-get update \
 FROM base AS deps
 COPY package.json package-lock.json ./
 COPY prisma ./prisma
-RUN npm ci
+RUN npm install --package-lock=false
 
 FROM deps AS builder
 COPY . .
