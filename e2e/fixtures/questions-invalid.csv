@@ -1,0 +1,2 @@
+prompt,correct answer,explanation
+Broken question,not-a-number,This row should fail validation.
