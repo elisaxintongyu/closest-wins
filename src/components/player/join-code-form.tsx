@@ -29,6 +29,7 @@ export function JoinCodeForm({ defaultJoinCode = "" }: JoinCodeFormProps) {
       <button
         type="submit"
         className="inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800"
+        style={{ color: "#fff" }}
       >
         Find game
       </button>

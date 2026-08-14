@@ -33,6 +33,7 @@ export function CreateGameForm() {
       <SubmitButton
         pendingLabel="Creating game..."
         className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+        style={{ color: "#fff" }}
       >
         Create game
       </SubmitButton>

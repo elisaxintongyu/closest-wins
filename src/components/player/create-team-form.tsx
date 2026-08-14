@@ -81,6 +81,7 @@ export function CreateTeamForm({
       <button
         type="submit"
         className="inline-flex items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800"
+        style={{ color: "#fff" }}
       >
         Create team
       </button>

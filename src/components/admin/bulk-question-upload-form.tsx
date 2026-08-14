@@ -47,6 +47,7 @@ export function BulkQuestionUploadForm({ gameId }: { gameId: string }) {
       <SubmitButton
         pendingLabel="Uploading questions..."
         className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+        style={{ color: "#fff" }}
       >
         Upload spreadsheet
       </SubmitButton>

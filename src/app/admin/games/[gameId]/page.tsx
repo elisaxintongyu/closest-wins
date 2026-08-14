@@ -60,9 +60,11 @@ export default async function AdminGamePage({
     <DashboardShell
       eyebrow="Question management"
       title={game.title}
-      description="Create, edit, and remove the questions that belong to this game session."
+      description="Create questions, update round order, and run the game from one place."
       userName={session.userName}
       roleLabel="Administrator"
+      homeHref="/admin"
+      homeLabel="Admin page"
       highlights={[
         `Join code: ${game.joinCode}`,
         `Game status: ${game.status}`,
@@ -126,8 +128,8 @@ export default async function AdminGamePage({
             </h2>
             <p className="text-sm leading-7 text-stone-700">
               Add one question at a time or bulk upload a spreadsheet. New
-              questions are appended to the bottom of the set and can then be
-              moved into place.
+              questions start at the bottom of the set and can be reordered
+              immediately.
             </p>
           </div>
 

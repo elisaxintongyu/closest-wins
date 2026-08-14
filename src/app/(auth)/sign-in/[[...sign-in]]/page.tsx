@@ -17,8 +17,8 @@ export default function SignInPage() {
             Sign in to your Closest Wins workspace.
           </h1>
           <p className="max-w-xl text-base leading-7 text-stone-700">
-            Use Clerk to authenticate with the app. This branch keeps the same
-            `/sign-in` route while delegating the auth flow to Clerk.
+            Use your account to open the right admin or player page for your
+            role.
           </p>
         </div>
         <div className="rounded-[1.5rem] border border-stone-900/10 bg-stone-50 p-5">
@@ -32,6 +32,7 @@ export default function SignInPage() {
           <Link
             href="/sign-up"
             className="mt-4 inline-flex rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
+            style={{ color: "#fff" }}
           >
             Create a player account
           </Link>

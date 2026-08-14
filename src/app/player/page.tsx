@@ -69,15 +69,11 @@ export default async function PlayerPage({
   return (
     <DashboardShell
       eyebrow="Player dashboard"
-      title="Create your team and head into the game."
-      description="Players can now join a game with its code, create a team, and keep track of the games they have already entered."
+      title="Player page"
+      description="Enter a join code, create your team, and reopen any game you've already joined."
       userName={session.userName}
       roleLabel="Player"
-      highlights={[
-        "Players are synced into PostgreSQL the first time they use the game flow",
-        "Team creation is tied directly to a real game join code",
-        "The later lobby and gameplay milestones now have a real team layer to build on",
-      ]}
+      highlights={[]}
     >
       <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <section className="space-y-4">
@@ -175,6 +171,7 @@ export default async function PlayerPage({
                     <Link
                       href={`/player/games/${membership.gameId}`}
                       className="mt-4 inline-flex items-center justify-center rounded-full border border-stone-900/10 bg-stone-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
+                      style={{ color: "#fff" }}
                     >
                       Open player game page
                     </Link>
