@@ -5,14 +5,14 @@ const prisma = new PrismaClient();
 
 const seedUsers = [
   {
-    email: "admin@closestwins.local",
+    email: "admin@closestwins.com",
     name: "Closest Wins Admin",
     password: "Admin123!",
     role: "ADMIN" as const,
   },
   {
-    email: "player@closestwins.local",
-    name: "Demo Player",
+    email: "user@closestwins.com",
+    name: "Demo User",
     password: "Player123!",
     role: "PLAYER" as const,
   },

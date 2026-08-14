@@ -3,14 +3,14 @@ import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
 const demoAccounts = [
   {
-    email: "admin@closestwins.local",
+    email: "admin@closestwins.com",
     password: "Admin123!",
     role: "Admin",
   },
   {
-    email: "player@closestwins.local",
+    email: "user@closestwins.com",
     password: "Player123!",
-    role: "Player",
+    role: "User",
   },
 ];
 

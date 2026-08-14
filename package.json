@@ -13,10 +13,15 @@
     "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
+    "db:seed-user": "tsx prisma/seed-user.ts",
     "db:make-admin": "tsx prisma/make-admin.ts",
     "db:up": "docker compose up -d postgres",
-    "db:down": "docker compose down"
+    "db:down": "docker compose down",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f web"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -27,7 +32,8 @@
     "bcryptjs": "^3.0.3",
     "next": "16.3.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
