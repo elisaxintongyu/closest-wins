@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { SignUp } from "@clerk/nextjs";
+import { TestAuthPanel } from "@/components/auth/test-auth-panel";
+import { isE2ETestModeEnabled } from "@/lib/test-mode";
 
 export default function SignUpPage() {
+  const isE2ETestMode = isE2ETestModeEnabled();
+
   return (
     <section className="grid w-full gap-8 rounded-[2rem] border border-stone-900/10 bg-white/80 p-8 shadow-[0_28px_90px_rgba(120,53,15,0.14)] backdrop-blur lg:grid-cols-[0.95fr_1.05fr] lg:p-10">
       <div className="space-y-6">
@@ -34,12 +38,16 @@ export default function SignUpPage() {
         </div>
       </div>
       <div className="rounded-[1.75rem] border border-stone-900/10 bg-stone-50/80 p-6">
-        <SignUp
-          path="/sign-up"
-          routing="path"
-          signInUrl="/sign-in"
-          fallbackRedirectUrl="/"
-        />
+        {isE2ETestMode ? (
+          <TestAuthPanel mode="sign-up" />
+        ) : (
+          <SignUp
+            path="/sign-up"
+            routing="path"
+            signInUrl="/sign-in"
+            fallbackRedirectUrl="/"
+          />
+        )}
       </div>
     </section>
   );

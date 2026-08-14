@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import { isE2ETestModeEnabled } from "@/lib/test-mode";
 
 type DashboardShellProps = {
   eyebrow: string;
@@ -25,6 +26,8 @@ export function DashboardShell({
   sidebarContent,
   children,
 }: DashboardShellProps) {
+  const showTestSignOut = isE2ETestModeEnabled();
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,_#fff8eb_0%,_#fff1d6_100%)] px-6 py-12 text-stone-950">
       <div className="mx-auto flex min-h-[calc(100vh-6rem)] w-full max-w-6xl flex-col gap-10">
@@ -45,7 +48,19 @@ export function DashboardShell({
               Back home
             </Link>
             <div className="inline-flex items-center rounded-full border border-stone-900/10 bg-white px-3 py-2">
-              <UserButton />
+              {showTestSignOut ? (
+                <form action="/api/test/session" method="post">
+                  <input type="hidden" name="intent" value="sign-out" />
+                  <button
+                    type="submit"
+                    className="rounded-full border border-stone-200 bg-white px-3 py-1 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
+                  >
+                    Sign out
+                  </button>
+                </form>
+              ) : (
+                <UserButton />
+              )}
             </div>
           </div>
         </header>
