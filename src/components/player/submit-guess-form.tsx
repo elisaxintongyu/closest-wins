@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { submitGuess } from "@/app/player/actions";
+import { SubmitButton } from "@/components/admin/submit-button";
 import {
   PlayerFieldErrors,
   PlayerFormMessage,
@@ -58,14 +59,14 @@ export function SubmitGuessForm({
 
       <PlayerFormMessage state={state} />
 
-      <button
-        type="submit"
+      <SubmitButton
+        pendingLabel="Submitting guess..."
         disabled={existingGuess !== null}
         className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800"
         style={{ color: "#fff" }}
       >
         {existingGuess !== null ? "Guess submitted" : "Submit guess"}
-      </button>
+      </SubmitButton>
     </form>
   );
 }

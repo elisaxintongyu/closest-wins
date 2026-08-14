@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { createTeam } from "@/app/player/actions";
+import { SubmitButton } from "@/components/admin/submit-button";
 import {
   PlayerFieldErrors,
   PlayerFormMessage,
@@ -78,13 +79,13 @@ export function CreateTeamForm({
 
       <PlayerFormMessage state={state} />
 
-      <button
-        type="submit"
+      <SubmitButton
+        pendingLabel="Creating team..."
         className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 sm:w-auto"
         style={{ color: "#fff" }}
       >
         Create team
-      </button>
+      </SubmitButton>
     </form>
   );
 }

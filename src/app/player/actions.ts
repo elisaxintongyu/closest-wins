@@ -2,7 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { findPlayerMembership, requirePlayerDatabaseUser } from "@/lib/player-access";
+import {
+  findPlayerMembership,
+  requirePlayerDatabaseUser,
+} from "@/lib/player-access";
 import { prisma } from "@/lib/prisma";
 import {
   initialPlayerActionState,
@@ -77,7 +80,7 @@ export async function createTeam(
   });
 
   if (existingMembership) {
-    redirect(`/player/games/${game.id}`);
+    redirect(`/player/games/${game.id}?status=already-joined`);
   }
 
   const existingTeam = await prisma.team.findFirst({
